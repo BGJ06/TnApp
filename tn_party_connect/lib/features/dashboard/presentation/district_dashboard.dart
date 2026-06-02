@@ -104,8 +104,8 @@ class DistrictDashboard extends ConsumerWidget {
               children: [
                 CircleAvatar(
                   radius: 28,
-                  backgroundColor: isDark ? AppTheme.accentDark : AppTheme.secondaryLight,
-                  child: const Icon(Icons.location_city, color: Colors.white, size: 28),
+                  backgroundColor: AppTheme.accent,
+                  child: const Icon(Icons.location_city, color: Colors.black, size: 28),
                 ),
                 const SizedBox(width: 16),
                 Column(
@@ -154,7 +154,7 @@ class DistrictDashboard extends ConsumerWidget {
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                   decoration: BoxDecoration(
-                    color: isDark ? AppTheme.secondaryDark : AppTheme.primaryLight,
+                    color: AppTheme.primary,
                     borderRadius: BorderRadius.circular(10),
                   ),
                   child: Text(

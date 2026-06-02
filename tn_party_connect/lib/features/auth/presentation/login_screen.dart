@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/theme.dart';
 import '../../../core/routes.dart';
+import '../../../core/localization.dart';
 import 'auth_state.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
@@ -14,11 +15,9 @@ class LoginScreen extends ConsumerStatefulWidget {
 class _LoginScreenState extends ConsumerState<LoginScreen> with SingleTickerProviderStateMixin {
   late TabController _tabController;
   
-  // Controllers for Member Login
+  // Controllers
   final _phoneController = TextEditingController(text: "+91");
   final _otpController = TextEditingController();
-  
-  // Controllers for Leader Login
   final _usernameController = TextEditingController();
   final _passwordController = TextEditingController();
 
@@ -44,14 +43,12 @@ class _LoginScreenState extends ConsumerState<LoginScreen> with SingleTickerProv
   void _handleStateNavigation(AuthState state) {
     if (state is AuthAuthenticated) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        final role = state.user.role;
-        if (role == 'member') {
-          Navigator.pushReplacementNamed(context, AppRoutes.memberDashboard);
-        } else if (role == 'state_president' || role == 'state_it_head') {
-          Navigator.pushReplacementNamed(context, AppRoutes.stateDashboard);
-        } else {
-          Navigator.pushReplacementNamed(context, AppRoutes.districtDashboard);
-        }
+        // Clear history and open the Bottom Navigation Shell
+        Navigator.pushNamedAndRemoveUntil(
+          context,
+          AppRoutes.navigationHolder,
+          (route) => false,
+        );
       });
     } else if (state is AuthNeedsRegistration) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -70,97 +67,126 @@ class _LoginScreenState extends ConsumerState<LoginScreen> with SingleTickerProv
     _handleStateNavigation(state);
 
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    
+    // Dynamic translations
+    final titleMember = context.tr('memberPortal', ref);
+    final titleLeader = context.tr('leadershipPortal', ref);
+    final btnDirectory = context.tr('browseDirectory', ref);
+    final langToggle = context.tr('languageToggle', ref);
 
     return Scaffold(
-      body: Container(
-        decoration: BoxDecoration(
-          gradient: isDark ? AppTheme.darkGradient : AppTheme.primaryGradient,
-        ),
-        child: SafeArea(
-          child: Center(
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  // Brand Header
-                  Icon(
-                    Icons.connect_without_contact,
-                    size: 80,
-                    color: isDark ? AppTheme.accentDark : AppTheme.secondaryLight,
+      backgroundColor: isDark ? AppTheme.backgroundDark : AppTheme.lightGray,
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        actions: [
+          // Language Switcher Toggle button
+          TextButton.icon(
+            onPressed: () {
+              ref.read(languageProvider.notifier).toggleLanguage();
+            },
+            icon: const Icon(Icons.language, color: AppTheme.accent),
+            label: Text(
+              langToggle,
+              style: const TextStyle(color: AppTheme.accent, fontWeight: FontWeight.bold),
+            ),
+          ),
+          const SizedBox(width: 8),
+        ],
+      ),
+      body: SafeArea(
+        child: Center(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.symmetric(horizontal: 24),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                // Animated Banner Header
+                Icon(
+                  Icons.account_balance,
+                  size: 64,
+                  color: isDark ? AppTheme.accent : AppTheme.primary,
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  context.tr('appName', ref).toUpperCase(),
+                  style: TextStyle(
+                    fontFamily: 'Poppins',
+                    fontSize: 26,
+                    fontWeight: FontWeight.bold,
+                    letterSpacing: 1.5,
+                    color: isDark ? Colors.white : AppTheme.primary,
                   ),
-                  const SizedBox(height: 16),
-                  Text(
-                    'TN PARTY CONNECT',
-                    style: Theme.of(context).textTheme.headlineLarge?.copyWith(
-                      color: Colors.white,
-                      letterSpacing: 2,
-                    ),
+                ),
+                const SizedBox(height: 6),
+                Text(
+                  context.tr('tagline', ref),
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontFamily: 'Inter',
+                    fontSize: 12,
+                    color: isDark ? Colors.white70 : AppTheme.darkGray.withOpacity(0.7),
                   ),
-                  const SizedBox(height: 8),
-                  const Text(
-                    'Tamil Nadu Political Network',
-                    style: TextStyle(
-                      color: Colors.white70,
-                      fontSize: 16,
-                      fontWeight: FontWeight.w300,
-                    ),
-                  ),
-                  const SizedBox(height: 32),
+                ),
+                const SizedBox(height: 36),
 
-                  // Core Input Card
-                  Card(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(24),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(24),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          // Custom styled TabBar
-                          TabBar(
+                // Card wrapping input elements
+                Card(
+                  elevation: 6,
+                  child: Padding(
+                    padding: const EdgeInsets.all(24),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        TabBar(
+                          controller: _tabController,
+                          indicatorColor: AppTheme.accent,
+                          labelColor: AppTheme.primary,
+                          unselectedLabelColor: Colors.grey,
+                          labelStyle: const TextStyle(fontWeight: FontWeight.bold),
+                          tabs: [
+                            Tab(text: titleMember),
+                            Tab(text: titleLeader),
+                          ],
+                        ),
+                        const SizedBox(height: 24),
+                        
+                        SizedBox(
+                          height: 250,
+                          child: TabBarView(
                             controller: _tabController,
-                            indicatorColor: isDark ? AppTheme.secondaryDark : AppTheme.primaryLight,
-                            labelColor: isDark ? Colors.white : AppTheme.primaryLight,
-                            unselectedLabelColor: Colors.grey,
-                            tabs: const [
-                              Tab(text: 'Member Portal', icon: Icon(Icons.person_pin)),
-                              Tab(text: 'Leadership', icon: Icon(Icons.admin_panel_settings)),
+                            children: [
+                              _buildMemberTab(state),
+                              _buildLeaderTab(state),
                             ],
                           ),
-                          const SizedBox(height: 24),
-                          
-                          // Tab Content
-                          SizedBox(
-                            height: 260,
-                            child: TabBarView(
-                              controller: _tabController,
-                              children: [
-                                _buildMemberTab(state),
-                                _buildLeaderTab(state),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
                   ),
-                  const SizedBox(height: 24),
+                ),
+                const SizedBox(height: 24),
 
-                  // Public Access Button
-                  TextButton.icon(
-                    onPressed: () {
-                      Navigator.pushNamed(context, AppRoutes.publicDirectory);
-                    },
-                    icon: const Icon(Icons.search, color: Colors.white),
-                    label: const Text(
-                      'Browse Public Directory',
-                      style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
+                // Quick Navigation to Public Directory
+                OutlinedButton.icon(
+                  onPressed: () {
+                    Navigator.pushNamed(context, AppRoutes.publicDirectory);
+                  },
+                  icon: Icon(Icons.search, color: isDark ? AppTheme.accent : AppTheme.primary),
+                  label: Text(
+                    btnDirectory,
+                    style: TextStyle(
+                      color: isDark ? AppTheme.accent : AppTheme.primary,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
-                ],
-              ),
+                  style: OutlinedButton.styleFrom(
+                    side: BorderSide(color: isDark ? AppTheme.accent : AppTheme.primary, width: 1.5),
+                    minimumSize: const Size.fromHeight(54),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                  ),
+                ),
+              ],
             ),
           ),
         ),
@@ -173,24 +199,24 @@ class _LoginScreenState extends ConsumerState<LoginScreen> with SingleTickerProv
       return Form(
         key: _formKeyMember,
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Text(
-              'Enter verification code sent to ${state.phoneNumber}',
-              style: const TextStyle(fontSize: 14, color: Colors.grey),
+              '${context.tr('enterOtp', ref)} (${state.phoneNumber})',
+              style: const TextStyle(fontSize: 13, color: Colors.grey),
             ),
             const SizedBox(height: 16),
             TextFormField(
               controller: _otpController,
               keyboardType: TextInputType.number,
               decoration: const InputDecoration(
-                prefixIcon: Icon(Icons.lock_open),
-                labelText: '6-digit OTP Code',
+                prefixIcon: Icon(Icons.lock_outline),
+                labelText: 'Verification Code',
                 border: OutlineInputBorder(),
               ),
               validator: (val) => val == null || val.length != 6 ? 'Enter 6 digits' : null,
             ),
-            const SizedBox(height: 24),
+            const SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
                 if (_formKeyMember.currentState!.validate()) {
@@ -201,14 +227,13 @@ class _LoginScreenState extends ConsumerState<LoginScreen> with SingleTickerProv
                 }
               },
               child: state is AuthLoading 
-                  ? const CircularProgressIndicator(color: Colors.white) 
-                  : const Text('Verify & Login'),
+                  ? const SizedBox(height: 20, width: 20, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2))
+                  : Text(context.tr('verifyLogin', ref)),
             ),
-            const SizedBox(height: 8),
             Center(
               child: TextButton(
                 onPressed: () => ref.read(authStateProvider.notifier).reset(),
-                child: const Text('Change Phone Number'),
+                child: const Text('Change Number', style: TextStyle(color: Colors.grey)),
               ),
             ),
           ],
@@ -221,19 +246,14 @@ class _LoginScreenState extends ConsumerState<LoginScreen> with SingleTickerProv
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          const Text(
-            'Log in or register via Mobile Number Verification',
-            style: TextStyle(fontSize: 14, color: Colors.grey),
-          ),
-          const SizedBox(height: 16),
           TextFormField(
             controller: _phoneController,
             keyboardType: TextInputType.phone,
-            decoration: const InputDecoration(
-              prefixIcon: Icon(Icons.phone_android),
+            decoration: InputDecoration(
+              prefixIcon: const Icon(Icons.phone_android),
               labelText: 'Mobile Number',
-              border: OutlineInputBorder(),
-              helperText: 'Include country code (e.g. +91)',
+              helperText: context.tr('phoneHelper', ref),
+              border: const OutlineInputBorder(),
             ),
             validator: (val) => val == null || val.length < 10 ? 'Enter valid number' : null,
           ),
@@ -245,14 +265,14 @@ class _LoginScreenState extends ConsumerState<LoginScreen> with SingleTickerProv
               }
             },
             child: state is AuthLoading 
-                ? const SizedBox(height: 20, width: 20, child: CircularProgressIndicator(color: Colors.white))
-                : const Text('Send Verification OTP'),
+                ? const SizedBox(height: 20, width: 20, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2))
+                : Text(context.tr('sendOtp', ref)),
           ),
           if (state is AuthError) ...[
             const SizedBox(height: 12),
             Text(
               state.message,
-              style: const TextStyle(color: Colors.red, fontSize: 13),
+              style: const TextStyle(color: AppTheme.emergency, fontSize: 12),
               textAlign: TextAlign.center,
             ),
           ],
@@ -269,23 +289,23 @@ class _LoginScreenState extends ConsumerState<LoginScreen> with SingleTickerProv
         children: [
           TextFormField(
             controller: _usernameController,
-            decoration: const InputDecoration(
-              prefixIcon: Icon(Icons.badge),
-              labelText: 'Leadership User ID',
-              border: OutlineInputBorder(),
+            decoration: InputDecoration(
+              prefixIcon: const Icon(Icons.shield_outlined),
+              labelText: context.tr('userId', ref),
+              border: const OutlineInputBorder(),
             ),
-            validator: (val) => val == null || val.isEmpty ? 'Enter User ID' : null,
+            validator: (val) => val == null || val.isEmpty ? 'Required' : null,
           ),
           const SizedBox(height: 16),
           TextFormField(
             controller: _passwordController,
             obscureText: true,
-            decoration: const InputDecoration(
-              prefixIcon: Icon(Icons.password),
-              labelText: 'Password',
-              border: OutlineInputBorder(),
+            decoration: InputDecoration(
+              prefixIcon: const Icon(Icons.lock_open_outlined),
+              labelText: context.tr('password', ref),
+              border: const OutlineInputBorder(),
             ),
-            validator: (val) => val == null || val.isEmpty ? 'Enter Password' : null,
+            validator: (val) => val == null || val.isEmpty ? 'Required' : null,
           ),
           const SizedBox(height: 24),
           ElevatedButton(
@@ -298,14 +318,14 @@ class _LoginScreenState extends ConsumerState<LoginScreen> with SingleTickerProv
               }
             },
             child: state is AuthLoading 
-                ? const SizedBox(height: 20, width: 20, child: CircularProgressIndicator(color: Colors.white))
-                : const Text('Secure Sign In'),
+                ? const SizedBox(height: 20, width: 20, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2))
+                : Text(context.tr('secureSignIn', ref)),
           ),
           if (state is AuthError) ...[
             const SizedBox(height: 12),
             Text(
               state.message,
-              style: const TextStyle(color: Colors.red, fontSize: 13),
+              style: const TextStyle(color: AppTheme.emergency, fontSize: 12),
               textAlign: TextAlign.center,
             ),
           ],

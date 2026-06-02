@@ -127,7 +127,7 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
                         children: [
                           CircleAvatar(
                             radius: 60,
-                            backgroundColor: isDark ? AppTheme.primaryDark : AppTheme.accentLight,
+                            backgroundColor: isDark ? AppTheme.surfaceDark : Colors.grey.shade300,
                             child: _profilePhotoPath.isEmpty
                                 ? const Icon(Icons.person, size: 60, color: Colors.white)
                                 : const Icon(Icons.check_circle, size: 60, color: Colors.green),
@@ -136,7 +136,7 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
                             bottom: 0,
                             right: 0,
                             child: CircleAvatar(
-                              backgroundColor: isDark ? AppTheme.secondaryDark : AppTheme.primaryLight,
+                              backgroundColor: AppTheme.primary,
                               radius: 20,
                               child: IconButton(
                                 icon: const Icon(Icons.camera_alt, size: 18, color: Colors.white),

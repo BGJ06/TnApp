@@ -106,7 +106,7 @@ class _InfluencerSearchState extends State<InfluencerSearch> {
           Container(
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
-              color: isDark ? const Color(0xFF152A22) : Colors.white,
+              color: isDark ? AppTheme.surfaceDark : Colors.white,
               boxShadow: [
                 BoxShadow(
                   color: Colors.black.withOpacity(0.05),
@@ -233,7 +233,7 @@ class _InfluencerSearchState extends State<InfluencerSearch> {
                             return Container(
                               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                               decoration: BoxDecoration(
-                                color: isDark ? Colors.teal.withOpacity(0.2) : Colors.teal.withOpacity(0.08),
+                                color: Colors.teal.withOpacity(0.1),
                                 borderRadius: BorderRadius.circular(4),
                               ),
                               child: Text(
@@ -273,7 +273,7 @@ class _InfluencerSearchState extends State<InfluencerSearch> {
                                     margin: const EdgeInsets.only(left: 8),
                                     child: CircleAvatar(
                                       radius: 16,
-                                      backgroundColor: isDark ? AppTheme.primaryDark : AppTheme.accentLight,
+                                      backgroundColor: AppTheme.primary,
                                       child: Icon(
                                         entry.key == 'x' 
                                             ? Icons.alternate_email

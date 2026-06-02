@@ -1,37 +1,41 @@
 import 'package:flutter/material.dart';
+import '../features/auth/presentation/splash_screen.dart';
 import '../features/auth/presentation/login_screen.dart';
 import '../features/registration/presentation/registration_screen.dart';
 import '../features/directory/presentation/directory_screen.dart';
-import '../features/dashboard/presentation/member_dashboard.dart';
-import '../features/dashboard/presentation/state_dashboard.dart';
-import '../features/dashboard/presentation/district_dashboard.dart';
+import '../features/directory/presentation/hierarchy_screen.dart';
+import '../features/dashboard/presentation/navigation_holder.dart';
+import '../features/dashboard/presentation/member_management_screen.dart';
 import '../features/it_wing/presentation/influencer_form.dart';
 import '../features/it_wing/presentation/influencer_search.dart';
 
 class AppRoutes {
+  static const String splash = '/';
   static const String login = '/login';
   static const String registration = '/registration';
+  static const String navigationHolder = '/nav-holder';
   static const String publicDirectory = '/public-directory';
-  static const String memberDashboard = '/member-dashboard';
-  static const String stateDashboard = '/state-dashboard';
-  static const String districtDashboard = '/district-dashboard';
+  static const String hierarchyExplorer = '/hierarchy';
+  static const String memberManagement = '/member-management';
   static const String influencerForm = '/influencer-form';
   static const String influencerSearch = '/influencer-search';
 
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
+      case splash:
+        return MaterialPageRoute(builder: (_) => const SplashScreen());
       case login:
         return MaterialPageRoute(builder: (_) => const LoginScreen());
       case registration:
         return MaterialPageRoute(builder: (_) => const RegistrationScreen());
+      case navigationHolder:
+        return MaterialPageRoute(builder: (_) => const NavigationHolder());
       case publicDirectory:
         return MaterialPageRoute(builder: (_) => const DirectoryScreen());
-      case memberDashboard:
-        return MaterialPageRoute(builder: (_) => const MemberDashboard());
-      case stateDashboard:
-        return MaterialPageRoute(builder: (_) => const StateDashboard());
-      case districtDashboard:
-        return MaterialPageRoute(builder: (_) => const DistrictDashboard());
+      case hierarchyExplorer:
+        return MaterialPageRoute(builder: (_) => const HierarchyScreen());
+      case memberManagement:
+        return MaterialPageRoute(builder: (_) => const MemberManagementScreen());
       case influencerForm:
         return MaterialPageRoute(builder: (_) => const InfluencerForm());
       case influencerSearch:

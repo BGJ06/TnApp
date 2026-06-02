@@ -217,7 +217,7 @@ class StateDashboard extends ConsumerWidget {
 
             // IT & Influencer Portal Navigation Banner
             Card(
-              color: isDark ? const Color(0xFF152A22) : AppTheme.accentLight.withOpacity(0.5),
+              color: isDark ? AppTheme.surfaceDark : AppTheme.primary.withOpacity(0.08),
               child: ListTile(
                 contentPadding: const EdgeInsets.all(20),
                 leading: const Icon(Icons.troubleshoot, size: 40, color: Colors.teal),

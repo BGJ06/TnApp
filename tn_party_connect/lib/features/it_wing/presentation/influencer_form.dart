@@ -230,8 +230,8 @@ class _InfluencerFormState extends State<InfluencerForm> {
                   return FilterChip(
                     label: Text(skill),
                     selected: isSelected,
-                    selectedColor: isDark ? AppTheme.secondaryDark : AppTheme.primaryLight.withOpacity(0.2),
-                    checkmarkColor: isDark ? Colors.white : AppTheme.primaryLight,
+                    selectedColor: AppTheme.primary.withOpacity(0.2),
+                    checkmarkColor: AppTheme.primary,
                     onSelected: (val) => _toggleSkill(skill),
                   );
                 }).toList(),

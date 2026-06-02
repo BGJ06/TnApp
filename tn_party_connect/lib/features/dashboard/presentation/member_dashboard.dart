@@ -75,7 +75,7 @@ class _MemberDashboardState extends ConsumerState<MemberDashboard> with SingleTi
                   children: [
                     CircleAvatar(
                       radius: 30,
-                      backgroundColor: isDark ? AppTheme.secondaryDark : AppTheme.primaryLight,
+                      backgroundColor: AppTheme.primary,
                       child: Text(
                         user.fullName[0],
                         style: const TextStyle(fontSize: 24, color: Colors.white, fontWeight: FontWeight.bold),
@@ -135,7 +135,11 @@ class _MemberDashboardState extends ConsumerState<MemberDashboard> with SingleTi
                             spreadRadius: 10,
                           )
                         ],
-                        gradient: AppTheme.sosGradient,
+                        gradient: const LinearGradient(
+                          colors: [Color(0xFFC62828), Color(0xFFB71C1C)],
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                        ),
                       ),
                       child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
@@ -213,7 +217,7 @@ class _MemberDashboardState extends ConsumerState<MemberDashboard> with SingleTi
 
             // IT Wing Navigation Shortcut
             Card(
-              color: isDark ? const Color(0xFF152A22) : AppTheme.accentLight.withOpacity(0.4),
+              color: isDark ? AppTheme.surfaceDark : AppTheme.primary.withOpacity(0.08),
               child: ListTile(
                 leading: const Icon(Icons.campaign, color: Colors.teal),
                 title: const Text('IT Wing / Influencer Registry', style: TextStyle(fontWeight: FontWeight.bold)),
