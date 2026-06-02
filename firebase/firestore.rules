@@ -1,0 +1,81 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Auth Validation Helpers
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isUserDoc(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    // Role Lookup Helpers
+    function getLeaderDoc() {
+      return get(/databases/$(database)/documents/leaders/$(request.auth.uid));
+    }
+
+    function isLeader() {
+      return isAuthenticated() && exists(/databases/$(database)/documents/leaders/$(request.auth.uid));
+    }
+
+    function hasRole(roleName) {
+      return isLeader() && getLeaderDoc().data.role == roleName;
+    }
+
+    function isStateLeader() {
+      return hasRole('state_president') || hasRole('state_general_secretary');
+    }
+
+    // --- Members Collection ---
+    match /members/{memberId} {
+      // Leaders can list/view profiles; members can view only their own
+      allow read: if isLeader() || isUserDoc(memberId);
+      
+      // Authentication is required to write profiles
+      allow create: if isAuthenticated() && request.auth.uid == memberId;
+      
+      // Update allowed by owner, or high state leadership, or district manager for approving
+      allow update: if isUserDoc(memberId) 
+        || isStateLeader()
+        || (hasRole('district_head') && getLeaderDoc().data.assignedRegion.district == resource.data.district);
+        
+      allow delete: if isStateLeader();
+    }
+
+    // --- Leaders Collection ---
+    match /leaders/{leaderId} {
+      // Public directory requires open read permissions
+      allow read: if true;
+      
+      // Only state command center is authorized to modify leadership nodes
+      allow write: if isStateLeader();
+    }
+
+    // --- SOS Alerts Collection ---
+    match /sos_alerts/{alertId} {
+      // Registered members can raise a panic alert
+      allow create: if isAuthenticated();
+      
+      // Leaders can monitor and coordinate active emergency flows
+      allow read, update: if isLeader();
+      
+      // Alerts can never be deleted to preserve audit logs
+      allow delete: if false;
+    }
+
+    // --- IT Wing & Influencer capability Matrix ---
+    match /it_wing_influencers/{influencerId} {
+      // IT Head, State president and specific leaders can query capability metrics
+      allow read: if isLeader();
+      
+      // Influencers can register themselves
+      allow create: if isAuthenticated();
+      
+      // IT leadership and profiles owner can modify data
+      allow update: if isUserDoc(influencerId) || hasRole('state_it_head') || isStateLeader();
+      allow delete: if hasRole('state_it_head') || isStateLeader();
+    }
+  }
+}

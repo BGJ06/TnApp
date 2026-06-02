@@ -1,0 +1,68 @@
+{
+  "districts": [
+    {
+      "name": "Chennai",
+      "taluks": ["Egmore", "Mylapore", "Tambaram", "Guindy", "Tondiarpet", "Perambur", "Aminjikarai", "Velachery", "Mambalam", "Sholinganallur", "Maduravoyal", "Alandur"]
+    },
+    {
+      "name": "Madurai",
+      "taluks": ["Madurai North", "Madurai South", "Madurai East", "Madurai West", "Melur", "Vadipatti", "Thirumangalam", "Peraiyur", "Usilampatti", "Tirupparankundram"]
+    },
+    {
+      "name": "Coimbatore",
+      "taluks": ["Coimbatore North", "Coimbatore South", "Coimbatore West", "Pollachi", "Mettupalayam", "Valparai", "Sulur", "Annur", "Perur", "Madukkarai"]
+    },
+    {
+      "name": "Tiruchirappalli",
+      "taluks": ["Trichy East", "Trichy West", "Srirangam", "Lalgudi", "Manachanallur", "Musiri", "Thuraiyur", "Manapparai", "Marungapuri"]
+    },
+    {
+      "name": "Salem",
+      "taluks": ["Salem", "Salem South", "Salem West", "Attur", "Mettur", "Omalur", "Sankari", "Yercaud", "Edappadi", "Gangavalli", "Vazhapadi"]
+    },
+    {
+      "name": "Tirunelveli",
+      "taluks": ["Tirunelveli", "Palayamkottai", "Ambasamudram", "Nanguneri", "Radhapuram", "Manur", "Cheranmahadevi", "Tisayanvilai"]
+    },
+    {
+      "name": "Vellore",
+      "taluks": ["Vellore", "Katpadi", "Anaicut", "Gudiyatham", "Pernambut"]
+    },
+    {
+      "name": "Erode",
+      "taluks": ["Erode", "Perundurai", "Bhavani", "Gobichettipalayam", "Sathyamangalam", "Anthiyur", "Kodumudi", "Modakkurichi"]
+    },
+    {
+      "name": "Thanjavur",
+      "taluks": ["Thanjavur", "Kumbakonam", "Pattukkottai", "Orathanadu", "Papanasam", "Thiruvaiyaru", "Peravurani", "Budalur", "Thiruvidaimarudur"]
+    },
+    {
+      "name": "Kanyakumari",
+      "taluks": ["Nagercoil", "Agastheeswaram", "Kalkulam", "Vilavancode", "Thovalai", "Killiyoor"]
+    },
+    {
+      "name": "Dindigul",
+      "taluks": ["Dindigul East", "Dindigul West", "Palani", "Kodaikanal", "Nilakottai", "Natham", "Oddanchatram", "Vedasandur", "Gujiliamparai", "Attur-Dgl"]
+    },
+    {
+      "name": "Thoothukudi",
+      "taluks": ["Thoothukudi", "Ettayapuram", "Kovilpatti", "Ottapidaram", "Sattankulam", "Srivaikuntam", "Tiruchendur", "Vilathikulam", "Kayathar", "Eral"]
+    },
+    {
+      "name": "Cuddalore",
+      "taluks": ["Cuddalore", "Chidambaram", "Panruti", "Vridhachalam", "Kurinjipadi", "Tittakudi", "Kattumannarkoil", "Srimushnam", "Bhuvanagiri"]
+    },
+    {
+      "name": "Tiruppur",
+      "taluks": ["Tiruppur North", "Tiruppur South", "Avinashi", "Dharapuram", "Kangeyam", "Palladam", "Udumalaipettai", "Madathukulam", "Uthukuli"]
+    },
+    {
+      "name": "Kanchipuram",
+      "taluks": ["Kanchipuram", "Sriperumbudur", "Walajabad", "Kundrathur", "Uthiramerur"]
+    },
+    {
+      "name": "Tiruvallur",
+      "taluks": ["Tiruvallur", "Avadi", "Poonamallee", "Ponneri", "Gummidipoondi", "Uthukottai", "Tiruttani", "Pallipattu", "R.K. Pet"]
+    }
+  ]
+}
