@@ -6,7 +6,7 @@ plugins {
 
 android {
     namespace = "com.example.tn_party_connect"
-    compileSdk = flutter.compileSdkVersion
+    compileSdk = 34
     ndkVersion = flutter.ndkVersion
 
     compileOptions {
