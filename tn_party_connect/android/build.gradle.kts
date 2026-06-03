@@ -24,11 +24,12 @@ tasks.register<Delete>("clean") {
 }
 
 subprojects {
-    afterEvaluate {
-        if (plugins.hasPlugin("com.android.application") || plugins.hasPlugin("com.android.library")) {
-            val android = extensions.getByName("android") as com.android.build.gradle.BaseExtension
-            android.compileSdkVersion(36)
-            android.defaultConfig.targetSdkVersion(36)
+    val subproject = this
+    if (subproject.name != "app") {
+        plugins.withId("com.android.library") {
+            configure<com.android.build.gradle.LibraryExtension> {
+                compileSdk = 36
+            }
         }
     }
 }
