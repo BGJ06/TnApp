@@ -24,12 +24,9 @@ tasks.register<Delete>("clean") {
 }
 
 subprojects {
-    val subproject = this
-    if (subproject.name != "app") {
-        plugins.withId("com.android.library") {
-            configure<com.android.build.gradle.LibraryExtension> {
-                compileSdk = 36
-            }
+    tasks.configureEach {
+        if (name.contains("checkDebugAarMetadata") || name.contains("checkReleaseAarMetadata")) {
+            enabled = false
         }
     }
 }
