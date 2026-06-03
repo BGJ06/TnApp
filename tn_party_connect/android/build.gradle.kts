@@ -24,12 +24,19 @@ tasks.register<Delete>("clean") {
 }
 
 subprojects {
+    plugins.withId("com.android.library") {
+        extensions.configure<com.android.build.gradle.LibraryExtension> {
+            compileSdk = 36
+        }
+    }
+    plugins.withId("com.android.application") {
+        extensions.configure<com.android.build.gradle.AppExtension> {
+            compileSdk = 36
+        }
+    }
     tasks.configureEach {
         if (name.contains("checkDebugAarMetadata") || name.contains("checkReleaseAarMetadata")) {
             (this as? VerificationTask)?.ignoreFailures = true
-            doFirst {
-                logging.captureStandardOutput(LogLevel.INFO)
-            }
             actions = emptyList()
         }
     }
