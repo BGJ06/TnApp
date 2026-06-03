@@ -26,7 +26,10 @@ tasks.register<Delete>("clean") {
 subprojects {
     tasks.configureEach {
         if (name.contains("checkDebugAarMetadata") || name.contains("checkReleaseAarMetadata")) {
-            enabled = false
+            extensions.findByType<com.android.build.gradle.internal.dsl.AarMetadataImpl>()?.let {
+                it.minCompileSdkExtension = 0
+            }
+            this.setProperty("ignoreFailures", true)
         }
     }
 }
