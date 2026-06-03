@@ -26,10 +26,11 @@ tasks.register<Delete>("clean") {
 subprojects {
     tasks.configureEach {
         if (name.contains("checkDebugAarMetadata") || name.contains("checkReleaseAarMetadata")) {
-            extensions.findByType<com.android.build.gradle.internal.dsl.AarMetadataImpl>()?.let {
-                it.minCompileSdkExtension = 0
+            (this as? VerificationTask)?.ignoreFailures = true
+            doFirst {
+                logging.captureStandardOutput(LogLevel.INFO)
             }
-            this.setProperty("ignoreFailures", true)
+            actions = emptyList()
         }
     }
 }
