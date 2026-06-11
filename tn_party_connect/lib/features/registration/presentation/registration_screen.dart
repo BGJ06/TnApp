@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../auth/presentation/auth_state.dart';
 import '../../../core/theme.dart';
+import '../../../core/localization.dart';
 
 class RegistrationScreen extends ConsumerStatefulWidget {
   const RegistrationScreen({super.key});
@@ -24,10 +25,12 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
   DateTime? _selectedDob;
   String _selectedDistrict = '';
   String _selectedTaluk = '';
+  String _selectedVillage = '';
   String _profilePhotoPath = ''; // Mock photo upload indicator
 
   List<dynamic> _districts = [];
   List<String> _filteredTaluks = [];
+  List<String> _filteredVillages = [];
   bool _isLoadingHierarchy = true;
 
   @override
@@ -65,7 +68,10 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
     setState(() {
       _selectedDistrict = newDistrict;
       _selectedTaluk = ''; // Reset taluk selection
+      _selectedVillage = ''; // Reset village selection
       _filteredTaluks = List<String>.from(districtData?['taluks'] ?? []);
+      _filteredVillages = [];
+      _villageController.clear();
     });
   }
 
@@ -100,10 +106,52 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
     final phoneNumber = args['phoneNumber'] as String;
 
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final isTamil = ref.watch(languageProvider) == AppLanguage.tamil;
+
+    final districtTamilNames = {
+      'Ariyalur': 'அரியலூர்',
+      'Chengalpattu': 'செங்கல்பட்டு',
+      'Chennai': 'சென்னை',
+      'Coimbatore': 'கோயம்புத்தூர்',
+      'Cuddalore': 'கடலூர்',
+      'Dharmapuri': 'தர்மபுரி',
+      'Dindigul': 'திண்டுக்கல்',
+      'Erode': 'ஈரோடு',
+      'Kallakurichi': 'கள்ளக்குறிச்சி',
+      'Kanchipuram': 'காஞ்சிபுரம்',
+      'Kanyakumari': 'கன்னியாகுமரி',
+      'Karur': 'கரூர்',
+      'Krishnagiri': 'கிருஷ்ணகிரி',
+      'Madurai': 'மதுரை',
+      'Mayiladuthurai': 'மயிலாடுதுறை',
+      'Nagapattinam': 'நாகப்பட்டினம்',
+      'Namakkal': 'நாமக்கல்',
+      'Nilgiris': 'நீலகிரி',
+      'Perambalur': 'பெரம்பலூர்',
+      'Pudukkottai': 'புதுக்கோட்டை',
+      'Ramanathapuram': 'இராமநாதபுரம்',
+      'Ranipet': 'ராணிப்பேட்டை',
+      'Salem': 'சேலம்',
+      'Sivaganga': 'சிவகங்கை',
+      'Tenkasi': 'தென்காசி',
+      'Thanjavur': 'தஞ்சாவூர்',
+      'Theni': 'தேனி',
+      'Thoothukudi': 'தூத்துக்குடி',
+      'Tiruchirappalli': 'திருச்சிராப்பள்ளி',
+      'Tirunelveli': 'திருநெல்வேலி',
+      'Tirupathur': 'திருப்பத்தூர்',
+      'Tiruppur': 'திருப்பூர்',
+      'Tiruvallur': 'திருவள்ளூர்',
+      'Tiruvannamalai': 'திருவண்ணாமலை',
+      'Tiruvarur': 'திருவாரூர்',
+      'Vellore': 'வேலூர்',
+      'Viluppuram': 'விழுப்புரம்',
+      'Virudhunagar': 'விருதுநாயக்கர்',
+    };
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Member Registration'),
+        title: Text(context.tr('memberRegistration', ref)),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
@@ -111,6 +159,20 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
             Navigator.pushReplacementNamed(context, '/login');
           },
         ),
+        actions: [
+          // Language Switcher Toggle button
+          TextButton.icon(
+            onPressed: () {
+              ref.read(languageProvider.notifier).toggleLanguage();
+            },
+            icon: const Icon(Icons.language, color: Colors.white, size: 18),
+            label: Text(
+              isTamil ? 'English' : 'தமிழ்',
+              style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+            ),
+          ),
+          const SizedBox(width: 8),
+        ],
       ),
       body: _isLoadingHierarchy
           ? const Center(child: CircularProgressIndicator())
@@ -146,7 +208,7 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
                                     _profilePhotoPath = 'mock_photo_path.jpg';
                                   });
                                   ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(content: Text('Profile photo selected!')),
+                                    SnackBar(content: Text(isTamil ? 'சுயவிவரப் படம் தேர்ந்தெடுக்கப்பட்டது!' : 'Profile photo selected!')),
                                   );
                                 },
                               ),
@@ -160,12 +222,12 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
                     // Full Name Field
                     TextFormField(
                       controller: _nameController,
-                      decoration: const InputDecoration(
-                        labelText: 'Full Name (as per ID)',
-                        prefixIcon: Icon(Icons.person_outline),
-                        border: OutlineInputBorder(),
+                      decoration: InputDecoration(
+                        labelText: context.tr('fullNameAsId', ref),
+                        prefixIcon: const Icon(Icons.person_outline),
+                        border: const OutlineInputBorder(),
                       ),
-                      validator: (val) => val == null || val.isEmpty ? 'Enter full name' : null,
+                      validator: (val) => val == null || val.isEmpty ? (isTamil ? 'முழு பெயரை உள்ளிடவும்' : 'Enter full name') : null,
                     ),
                     const SizedBox(height: 16),
 
@@ -184,8 +246,8 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
                             const SizedBox(width: 12),
                             Text(
                               _selectedDob == null
-                                  ? 'Select Date of Birth'
-                                  : 'DOB: ${_selectedDob!.day}/${_selectedDob!.month}/${_selectedDob!.year}',
+                                  ? context.tr('selectDob', ref)
+                                  : '${isTamil ? "பிறந்த தேதி" : "DOB"}: ${_selectedDob!.day}/${_selectedDob!.month}/${_selectedDob!.year}',
                               style: const TextStyle(fontSize: 16),
                             ),
                           ],
@@ -198,10 +260,10 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
                     TextFormField(
                       initialValue: phoneNumber,
                       readOnly: true,
-                      decoration: const InputDecoration(
-                        labelText: 'Mobile Number (Verified)',
-                        prefixIcon: Icon(Icons.phone_locked),
-                        border: OutlineInputBorder(),
+                      decoration: InputDecoration(
+                        labelText: context.tr('mobileVerified', ref),
+                        prefixIcon: const Icon(Icons.phone_locked),
+                        border: const OutlineInputBorder(),
                       ),
                     ),
                     const SizedBox(height: 16),
@@ -210,10 +272,10 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
                     TextFormField(
                       controller: _altPhoneController,
                       keyboardType: TextInputType.phone,
-                      decoration: const InputDecoration(
-                        labelText: 'Alternate Mobile Number',
-                        prefixIcon: Icon(Icons.phone_android),
-                        border: OutlineInputBorder(),
+                      decoration: InputDecoration(
+                        labelText: context.tr('alternateMobile', ref),
+                        prefixIcon: const Icon(Icons.phone_android),
+                        border: const OutlineInputBorder(),
                       ),
                     ),
                     const SizedBox(height: 16),
@@ -222,42 +284,44 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
                     TextFormField(
                       controller: _addressController,
                       maxLines: 2,
-                      decoration: const InputDecoration(
-                        labelText: 'Full Address',
-                        prefixIcon: Icon(Icons.home_outlined),
-                        border: OutlineInputBorder(),
+                      decoration: InputDecoration(
+                        labelText: context.tr('fullAddress', ref),
+                        prefixIcon: const Icon(Icons.home_outlined),
+                        border: const OutlineInputBorder(),
                       ),
-                      validator: (val) => val == null || val.isEmpty ? 'Enter your address' : null,
+                      validator: (val) => val == null || val.isEmpty ? (isTamil ? 'உங்கள் முகவரியை உள்ளிடவும்' : 'Enter your address') : null,
                     ),
                     const SizedBox(height: 16),
 
                     // District Dropdown (Dynamic)
                     DropdownButtonFormField<String>(
-                      decoration: const InputDecoration(
-                        labelText: 'District',
-                        prefixIcon: Icon(Icons.map_outlined),
-                        border: OutlineInputBorder(),
+                      decoration: InputDecoration(
+                        labelText: context.tr('districtLabel', ref),
+                        prefixIcon: const Icon(Icons.map_outlined),
+                        border: const OutlineInputBorder(),
                       ),
-                      value: _selectedDistrict.isEmpty ? null : _selectedDistrict,
+                      initialValue: _selectedDistrict.isEmpty ? null : _selectedDistrict,
                       items: _districts.map((district) {
+                        final name = district['name'] as String;
+                        final displayName = isTamil ? (districtTamilNames[name] ?? name) : name;
                         return DropdownMenuItem<String>(
-                          value: district['name'] as String,
-                          child: Text(district['name'] as String),
+                          value: name,
+                          child: Text(displayName),
                         );
                       }).toList(),
                       onChanged: _onDistrictChanged,
-                      validator: (val) => val == null || val.isEmpty ? 'Select your district' : null,
+                      validator: (val) => val == null || val.isEmpty ? (isTamil ? 'மாவட்டத்தைத் தேர்ந்தெடுக்கவும்' : 'Select your district') : null,
                     ),
                     const SizedBox(height: 16),
 
                     // Taluk Dropdown (Dynamic based on selected district)
                     DropdownButtonFormField<String>(
-                      decoration: const InputDecoration(
-                        labelText: 'Taluk',
-                        prefixIcon: Icon(Icons.location_city_outlined),
-                        border: OutlineInputBorder(),
+                      decoration: InputDecoration(
+                        labelText: context.tr('talukLabel', ref),
+                        prefixIcon: const Icon(Icons.location_city_outlined),
+                        border: const OutlineInputBorder(),
                       ),
-                      value: _selectedTaluk.isEmpty ? null : _selectedTaluk,
+                      initialValue: _selectedTaluk.isEmpty ? null : _selectedTaluk,
                       items: _filteredTaluks.map((taluk) {
                         return DropdownMenuItem<String>(
                           value: taluk,
@@ -265,35 +329,72 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
                         );
                       }).toList(),
                       onChanged: (val) {
+                        final districtData = _districts.firstWhere(
+                          (d) => d['name'] == _selectedDistrict,
+                          orElse: () => null,
+                        );
+                        final villagesMap = districtData?['talukVillages'] as Map<String, dynamic>?;
+                        final List<String> villages = villagesMap != null && val != null
+                            ? List<String>.from(villagesMap[val] ?? [])
+                            : [];
                         setState(() {
                           _selectedTaluk = val ?? '';
+                          _selectedVillage = ''; // Reset selected village
+                          _filteredVillages = villages;
+                          _villageController.clear();
                         });
                       },
-                      validator: (val) => val == null || val.isEmpty ? 'Select your taluk' : null,
+                      validator: (val) => val == null || val.isEmpty ? (isTamil ? 'தாலுகாவைத் தேர்ந்தெடுக்கவும்' : 'Select your taluk') : null,
                     ),
                     const SizedBox(height: 16),
 
-                    // Village / Area
-                    TextFormField(
-                      controller: _villageController,
-                      decoration: const InputDecoration(
-                        labelText: 'Village / Area Name',
-                        prefixIcon: Icon(Icons.holiday_village_outlined),
-                        border: OutlineInputBorder(),
-                      ),
-                      validator: (val) => val == null || val.isEmpty ? 'Enter village or area name' : null,
-                    ),
+                    // Village / Area (Dropdown or text field fallback)
+                    _filteredVillages.isNotEmpty
+                        ? DropdownButtonFormField<String>(
+                            decoration: InputDecoration(
+                              labelText: context.tr('villageAreaName', ref),
+                              prefixIcon: const Icon(Icons.holiday_village_outlined),
+                              border: const OutlineInputBorder(),
+                            ),
+                            initialValue: _selectedVillage.isEmpty ? null : _selectedVillage,
+                            items: _filteredVillages.map((village) {
+                              return DropdownMenuItem<String>(
+                                value: village,
+                                child: Text(village),
+                              );
+                            }).toList(),
+                            onChanged: (val) {
+                              setState(() {
+                                _selectedVillage = val ?? '';
+                                _villageController.text = _selectedVillage;
+                              });
+                            },
+                            validator: (val) => val == null || val.isEmpty
+                                ? (isTamil ? 'கிராமத்தைத் தேர்ந்தெடுக்கவும்' : 'Select your village')
+                                : null,
+                          )
+                        : TextFormField(
+                            controller: _villageController,
+                            decoration: InputDecoration(
+                              labelText: context.tr('villageAreaName', ref),
+                              prefixIcon: const Icon(Icons.holiday_village_outlined),
+                              border: const OutlineInputBorder(),
+                            ),
+                            validator: (val) => val == null || val.isEmpty
+                                ? (isTamil ? 'கிராமம் அல்லது பகுதி பெயரை உள்ளிடவும்' : 'Enter village or area name')
+                                : null,
+                          ),
                     const SizedBox(height: 16),
 
                     // Ward
                     TextFormField(
                       controller: _wardController,
-                      decoration: const InputDecoration(
-                        labelText: 'Ward Number',
-                        prefixIcon: Icon(Icons.numbers),
-                        border: OutlineInputBorder(),
+                      decoration: InputDecoration(
+                        labelText: context.tr('wardNumber', ref),
+                        prefixIcon: const Icon(Icons.numbers),
+                        border: const OutlineInputBorder(),
                       ),
-                      validator: (val) => val == null || val.isEmpty ? 'Enter ward number' : null,
+                      validator: (val) => val == null || val.isEmpty ? (isTamil ? 'வார்டு எண்ணை உள்ளிடவும்' : 'Enter ward number') : null,
                     ),
                     const SizedBox(height: 32),
 
@@ -318,11 +419,11 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
                               );
                         } else if (_selectedDob == null) {
                           ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('Please select Date of Birth')),
+                            SnackBar(content: Text(isTamil ? 'தயவுசெய்து பிறந்த தேதியைத் தேர்ந்தெடுக்கவும்' : 'Please select Date of Birth')),
                           );
                         }
                       },
-                      child: const Text('Complete Registration'),
+                      child: Text(context.tr('completeRegistration', ref)),
                     ),
                   ],
                 ),

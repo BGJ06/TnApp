@@ -11,6 +11,7 @@ class AuthUser {
   final String role;
   final Map<String, dynamic> assignedRegion;
   final String? mobileNumber;
+  final String status;
 
   AuthUser({
     required this.uid,
@@ -18,12 +19,13 @@ class AuthUser {
     required this.role,
     required this.assignedRegion,
     this.mobileNumber,
+    this.status = 'approved',
   });
 }
 
 class AuthRepository {
-  final FirebaseAuth _auth = FirebaseAuth.instance;
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  FirebaseAuth get _auth => FirebaseAuth.instance;
+  FirebaseFirestore get _firestore => FirebaseFirestore.instance;
 
   // Mock users for offline demonstration
   static final List<AuthUser> _mockUsers = [
@@ -79,10 +81,30 @@ class AuthRepository {
         (u) => u.uid == '${username}_uid' || u.role.replaceAll('_', '') == username.replaceAll('_', ''),
         orElse: () => throw Exception('Invalid username/credentials in offline mode'),
       );
-      if (password == 'password123') {
+      
+      String expectedPassword = 'password123';
+      switch (user.role) {
+        case AppConstants.roleStatePresident:
+          expectedPassword = 'president123';
+          break;
+        case AppConstants.roleStateITHead:
+          expectedPassword = 'ithead123';
+          break;
+        case AppConstants.roleDistrictHead:
+          expectedPassword = 'district123';
+          break;
+        case AppConstants.roleTalukHead:
+          expectedPassword = 'taluk123';
+          break;
+        case AppConstants.roleWardHead:
+          expectedPassword = 'ward123';
+          break;
+      }
+
+      if (password == expectedPassword || password == 'password123') {
         return user;
       } else {
-        throw Exception('Incorrect password');
+        throw Exception('Incorrect password. Try "$expectedPassword" or "password123".');
       }
     }
 
@@ -113,6 +135,7 @@ class AuthRepository {
         role: data['role'] ?? AppConstants.roleWardHead,
         assignedRegion: Map<String, dynamic>.from(data['assignedRegion'] ?? {}),
         mobileNumber: data['mobileNumber'],
+        status: data['status'] ?? 'approved',
       );
     } catch (e) {
       debugPrint('Leader Login failed: $e');
@@ -175,6 +198,7 @@ class AuthRepository {
           role: AppConstants.roleMember,
           assignedRegion: {},
           mobileNumber: userCred.user!.phoneNumber,
+          status: 'pending',
         );
       }
 
@@ -191,6 +215,7 @@ class AuthRepository {
           'ward': data['ward'],
         },
         mobileNumber: data['mobileNumber'] ?? userCred.user!.phoneNumber,
+        status: data['status'] ?? 'pending',
       );
     } catch (e) {
       debugPrint("OTP verification error: $e");

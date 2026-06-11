@@ -24,33 +24,35 @@ class PendingApprovalMember {
 }
 
 // Manage list state of approvals locally for UI interaction
-class PendingApprovalsNotifier extends StateNotifier<List<PendingApprovalMember>> {
-  PendingApprovalsNotifier() : super([
-    PendingApprovalMember(
-      uid: 'app-user-1',
-      fullName: 'Senthil Kumar',
-      mobileNumber: '+919840123456',
-      taluk: 'Egmore',
-      ward: '119',
-      requestTimestamp: '2 hours ago',
-    ),
-    PendingApprovalMember(
-      uid: 'app-user-2',
-      fullName: 'Meenakshi Sundaram',
-      mobileNumber: '+919444987654',
-      taluk: 'Egmore',
-      ward: '120',
-      requestTimestamp: '4 hours ago',
-    ),
-    PendingApprovalMember(
-      uid: 'app-user-3',
-      fullName: 'Vijay Raghavan',
-      mobileNumber: '+919003112233',
-      taluk: 'Mylapore',
-      ward: '142',
-      requestTimestamp: 'Yesterday',
-    ),
-  ]);
+class PendingApprovalsNotifier
+    extends StateNotifier<List<PendingApprovalMember>> {
+  PendingApprovalsNotifier()
+      : super([
+          PendingApprovalMember(
+            uid: 'app-user-1',
+            fullName: 'Senthil Kumar',
+            mobileNumber: '+919840123456',
+            taluk: 'Egmore',
+            ward: '119',
+            requestTimestamp: '2 hours ago',
+          ),
+          PendingApprovalMember(
+            uid: 'app-user-2',
+            fullName: 'Meenakshi Sundaram',
+            mobileNumber: '+919444987654',
+            taluk: 'Egmore',
+            ward: '120',
+            requestTimestamp: '4 hours ago',
+          ),
+          PendingApprovalMember(
+            uid: 'app-user-3',
+            fullName: 'Vijay Raghavan',
+            mobileNumber: '+919003112233',
+            taluk: 'Mylapore',
+            ward: '142',
+            requestTimestamp: 'Yesterday',
+          ),
+        ]);
 
   void approve(String uid) {
     state = state.where((m) => m.uid != uid).toList();
@@ -61,7 +63,8 @@ class PendingApprovalsNotifier extends StateNotifier<List<PendingApprovalMember>
   }
 }
 
-final pendingApprovalsProvider = StateNotifierProvider<PendingApprovalsNotifier, List<PendingApprovalMember>>((ref) {
+final pendingApprovalsProvider = StateNotifierProvider<PendingApprovalsNotifier,
+    List<PendingApprovalMember>>((ref) {
   return PendingApprovalsNotifier();
 });
 
@@ -102,10 +105,11 @@ class DistrictDashboard extends ConsumerWidget {
             // Header Info
             Row(
               children: [
-                CircleAvatar(
+                const CircleAvatar(
                   radius: 28,
                   backgroundColor: AppTheme.accent,
-                  child: const Icon(Icons.location_city, color: Colors.black, size: 28),
+                  child:
+                      Icon(Icons.location_city, color: Colors.black, size: 28),
                 ),
                 const SizedBox(width: 16),
                 Column(
@@ -113,7 +117,8 @@ class DistrictDashboard extends ConsumerWidget {
                   children: [
                     Text(
                       user.fullName,
-                      style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                      style: const TextStyle(
+                          fontSize: 18, fontWeight: FontWeight.bold),
                     ),
                     Text(
                       'District Coordinator - $districtName',
@@ -136,7 +141,8 @@ class DistrictDashboard extends ConsumerWidget {
                     const VerticalDivider(width: 20, thickness: 1),
                     _buildQuickStat('Active Leaders', '54'),
                     const VerticalDivider(width: 20, thickness: 1),
-                    _buildQuickStat('Pending Approvals', '${pendingMembers.length}'),
+                    _buildQuickStat(
+                        'Pending Approvals', '${pendingMembers.length}'),
                   ],
                 ),
               ),
@@ -152,26 +158,31 @@ class DistrictDashboard extends ConsumerWidget {
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                   decoration: BoxDecoration(
                     color: AppTheme.primary,
                     borderRadius: BorderRadius.circular(10),
                   ),
                   child: Text(
                     '${pendingMembers.length} Pending',
-                    style: const TextStyle(color: Colors.white, fontSize: 11, fontWeight: FontWeight.bold),
+                    style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 11,
+                        fontWeight: FontWeight.bold),
                   ),
                 ),
               ],
             ),
             const SizedBox(height: 12),
-            
+
             if (pendingMembers.isEmpty)
               const Card(
                 child: Padding(
                   padding: EdgeInsets.all(24),
                   child: Center(
-                    child: Text('All regional applications approved!', style: TextStyle(color: Colors.grey)),
+                    child: Text('All regional applications approved!',
+                        style: TextStyle(color: Colors.grey)),
                   ),
                 ),
               )
@@ -194,29 +205,37 @@ class DistrictDashboard extends ConsumerWidget {
                             children: [
                               Text(
                                 member.fullName,
-                                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.bold, fontSize: 16),
                               ),
                               Text(
                                 member.requestTimestamp,
-                                style: const TextStyle(color: Colors.grey, fontSize: 12),
+                                style: const TextStyle(
+                                    color: Colors.grey, fontSize: 12),
                               ),
                             ],
                           ),
                           const SizedBox(height: 8),
                           Text('Taluk: ${member.taluk} | Ward: ${member.ward}'),
-                          Text('Phone: ${member.mobileNumber}', style: const TextStyle(color: Colors.grey)),
+                          Text('Phone: ${member.mobileNumber}',
+                              style: const TextStyle(color: Colors.grey)),
                           const SizedBox(height: 16),
                           Row(
                             children: [
                               Expanded(
                                 child: OutlinedButton(
                                   onPressed: () {
-                                    ref.read(pendingApprovalsProvider.notifier).reject(member.uid);
+                                    ref
+                                        .read(pendingApprovalsProvider.notifier)
+                                        .reject(member.uid);
                                     ScaffoldMessenger.of(context).showSnackBar(
-                                      const SnackBar(content: Text('Member Registration Rejected')),
+                                      const SnackBar(
+                                          content: Text(
+                                              'Member Registration Rejected')),
                                     );
                                   },
-                                  style: OutlinedButton.styleFrom(foregroundColor: Colors.red),
+                                  style: OutlinedButton.styleFrom(
+                                      foregroundColor: Colors.red),
                                   child: const Text('Reject'),
                                 ),
                               ),
@@ -224,9 +243,13 @@ class DistrictDashboard extends ConsumerWidget {
                               Expanded(
                                 child: ElevatedButton(
                                   onPressed: () {
-                                    ref.read(pendingApprovalsProvider.notifier).approve(member.uid);
+                                    ref
+                                        .read(pendingApprovalsProvider.notifier)
+                                        .approve(member.uid);
                                     ScaffoldMessenger.of(context).showSnackBar(
-                                      const SnackBar(content: Text('Member Registration Approved!')),
+                                      const SnackBar(
+                                          content: Text(
+                                              'Member Registration Approved!')),
                                     );
                                   },
                                   child: const Text('Approve'),

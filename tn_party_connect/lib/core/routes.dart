@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../features/auth/presentation/splash_screen.dart';
 import '../features/auth/presentation/login_screen.dart';
+import '../features/auth/presentation/auth_state.dart';
 import '../features/registration/presentation/registration_screen.dart';
 import '../features/directory/presentation/directory_screen.dart';
 import '../features/directory/presentation/hierarchy_screen.dart';
@@ -35,11 +37,41 @@ class AppRoutes {
       case hierarchyExplorer:
         return MaterialPageRoute(builder: (_) => const HierarchyScreen());
       case memberManagement:
-        return MaterialPageRoute(builder: (_) => const MemberManagementScreen());
+        return MaterialPageRoute(
+          builder: (_) => Consumer(
+            builder: (context, ref, child) {
+              final authState = ref.watch(authStateProvider);
+              if (authState is! AuthAuthenticated) {
+                return const LoginScreen();
+              }
+              return const MemberManagementScreen();
+            },
+          ),
+        );
       case influencerForm:
-        return MaterialPageRoute(builder: (_) => const InfluencerForm());
+        return MaterialPageRoute(
+          builder: (_) => Consumer(
+            builder: (context, ref, child) {
+              final authState = ref.watch(authStateProvider);
+              if (authState is! AuthAuthenticated) {
+                return const LoginScreen();
+              }
+              return const InfluencerForm();
+            },
+          ),
+        );
       case influencerSearch:
-        return MaterialPageRoute(builder: (_) => const InfluencerSearch());
+        return MaterialPageRoute(
+          builder: (_) => Consumer(
+            builder: (context, ref, child) {
+              final authState = ref.watch(authStateProvider);
+              if (authState is! AuthAuthenticated) {
+                return const LoginScreen();
+              }
+              return const InfluencerSearch();
+            },
+          ),
+        );
       default:
         return MaterialPageRoute(
           builder: (_) => Scaffold(

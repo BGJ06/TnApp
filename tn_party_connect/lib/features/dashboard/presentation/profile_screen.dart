@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../auth/presentation/auth_state.dart';
+import '../../auth/data/auth_repository.dart';
 import '../../../core/theme.dart';
+import '../../../core/routes.dart';
+import '../../../core/localization.dart';
 
 class ProfileScreen extends ConsumerWidget {
   const ProfileScreen({super.key});
@@ -9,21 +12,165 @@ class ProfileScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final authState = ref.watch(authStateProvider);
-    if (authState is! AuthAuthenticated) {
-      return const Scaffold(body: Center(child: CircularProgressIndicator()));
+    final isGuest = authState is! AuthAuthenticated;
+    final isTamil = ref.watch(languageProvider) == AppLanguage.tamil;
+
+    if (isGuest) {
+      return Scaffold(
+        appBar: AppBar(
+          title: Text(context.tr('profile', ref)),
+          actions: [
+            // Language Switcher Toggle button inside app bar
+            TextButton.icon(
+              onPressed: () {
+                ref.read(languageProvider.notifier).toggleLanguage();
+              },
+              icon: const Icon(Icons.language, color: Colors.white, size: 18),
+              label: Text(
+                isTamil ? 'English' : 'தமிழ்',
+                style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+              ),
+            ),
+            const SizedBox(width: 8),
+          ],
+        ),
+        body: Center(
+          child: Padding(
+            padding: const EdgeInsets.all(24.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                const Icon(
+                  Icons.person_outline,
+                  size: 80,
+                  color: AppTheme.accent,
+                ),
+                const SizedBox(height: 24),
+                Text(
+                  context.tr('profileDetails', ref),
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 12),
+                Text(
+                  context.tr('profileGuestDesc', ref),
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                    fontSize: 14,
+                    color: Colors.grey,
+                  ),
+                ),
+                const SizedBox(height: 40),
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.pushNamed(context, AppRoutes.login);
+                  },
+                  child: Text(context.tr('loginOrRegister', ref)),
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
     }
 
-    final user = authState.user;
+    final user = (authState as AuthAuthenticated).user;
     final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    // Translation helper maps
+    final districtTamilNames = {
+      'Ariyalur': 'அரியலூர்',
+      'Chengalpattu': 'செங்கல்பட்டு',
+      'Chennai': 'சென்னை',
+      'Coimbatore': 'கோயம்புத்தூர்',
+      'Cuddalore': 'கடலூர்',
+      'Dharmapuri': 'தர்மபுரி',
+      'Dindigul': 'திண்டுக்கல்',
+      'Erode': 'ஈரோடு',
+      'Kallakurichi': 'கள்ளக்குறிச்சி',
+      'Kanchipuram': 'காஞ்சிபுரம்',
+      'Kanyakumari': 'கன்னியாகுமரி',
+      'Karur': 'கரூர்',
+      'Krishnagiri': 'கிருஷ்ணகிரி',
+      'Madurai': 'மதுரை',
+      'Mayiladuthurai': 'மயிலாடுதுறை',
+      'Nagapattinam': 'நாகப்பட்டினம்',
+      'Namakkal': 'நாமக்கல்',
+      'Nilgiris': 'நீலகிரி',
+      'Perambalur': 'பெரம்பலூர்',
+      'Pudukkottai': 'புதுக்கோட்டை',
+      'Ramanathapuram': 'இராமநாதபுரம்',
+      'Ranipet': 'ராணிப்பேட்டை',
+      'Salem': 'சேலம்',
+      'Sivaganga': 'சிவகங்கை',
+      'Tenkasi': 'தென்காசி',
+      'Thanjavur': 'தஞ்சாவூர்',
+      'Theni': 'தேனி',
+      'Thoothukudi': 'தூத்துக்குடி',
+      'Tiruchirappalli': 'திருச்சிராப்பள்ளி',
+      'Tirunelveli': 'திருநெல்வேலி',
+      'Tirupathur': 'திருப்பத்தூர்',
+      'Tiruppur': 'திருப்பூர்',
+      'Tiruvallur': 'திருவள்ளூர்',
+      'Tiruvannamalai': 'திருவண்ணாமலை',
+      'Tiruvarur': 'திருவாரூர்',
+      'Vellore': 'வேலூர்',
+      'Viluppuram': 'விழுப்புரம்',
+      'Virudhunagar': 'விருதுநகர்',
+    };
+
+    final roleTranslations = {
+      'guest': isTamil ? 'விருந்தினர்' : 'GUEST',
+      'member': isTamil ? 'உறுப்பினர்' : 'MEMBER',
+      'state_president': isTamil ? 'மாநிலத் தலைவர்' : 'STATE PRESIDENT',
+      'state_it_head': isTamil ? 'மாநில IT பிரிவுத் தலைவர்' : 'STATE IT HEAD',
+      'district_head': isTamil ? 'மாவட்டத் தலைவர்' : 'DISTRICT HEAD',
+      'taluk_head': isTamil ? 'தாலுகா தலைவர்' : 'TALUK HEAD',
+      'ward_head': isTamil ? 'வார்டு தலைவர்' : 'WARD HEAD',
+    };
+
+    final district = user.assignedRegion['district'] ?? 'Tamil Nadu';
+    final localizedDistrict = isTamil ? (districtTamilNames[district] ?? 'தமிழ்நாடு') : district;
+    final roleText = roleTranslations[user.role] ?? user.role.replaceAll('_', ' ').toUpperCase();
 
     // Generated static details for demonstration
     final mockDob = user.role == 'member' ? '12/08/1994' : '05/04/1982';
     final mockEmail = user.role == 'member' ? 'member@gmail.com' : '${user.uid}@tnpartyconnect.org';
     final mockMemberId = 'TN-${user.role.substring(0,2).toUpperCase()}-9841-2026';
 
+    // Status mapping
+    final isApproved = user.status == 'approved';
+    final statusColor = isApproved ? Colors.green : Colors.orange;
+    final statusText = isApproved ? context.tr('approved', ref) : context.tr('validationPending', ref);
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text('My Profile'),
+        title: Text(context.tr('profile', ref)),
+        actions: [
+          // Language Switcher Toggle button inside app bar
+          TextButton.icon(
+            onPressed: () {
+              ref.read(languageProvider.notifier).toggleLanguage();
+            },
+            icon: const Icon(Icons.language, color: Colors.white, size: 18),
+            label: Text(
+              isTamil ? 'English' : 'தமிழ்',
+              style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+            ),
+          ),
+          const SizedBox(width: 4),
+          IconButton(
+            icon: const Icon(Icons.logout),
+            onPressed: () async {
+              await ref.read(authStateProvider.notifier).logout();
+              Navigator.pushReplacementNamed(context, AppRoutes.navigationHolder);
+            },
+          )
+        ],
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20),
@@ -60,9 +207,9 @@ class ProfileScreen extends ConsumerWidget {
                           color: AppTheme.accent,
                           borderRadius: BorderRadius.circular(4),
                         ),
-                        child: const Text(
-                          'ACTIVE MEMBER',
-                          style: TextStyle(color: Colors.black, fontSize: 9, fontWeight: FontWeight.bold),
+                        child: Text(
+                          isTamil ? 'செயலில் உள்ள உறுப்பினர்' : 'ACTIVE MEMBER',
+                          style: const TextStyle(color: Colors.black, fontSize: 9, fontWeight: FontWeight.bold),
                         ),
                       ),
                     ],
@@ -74,7 +221,7 @@ class ProfileScreen extends ConsumerWidget {
                         radius: 28,
                         backgroundColor: Colors.white.withOpacity(0.2),
                         child: Text(
-                          user.fullName[0],
+                          user.fullName.isNotEmpty ? user.fullName[0] : 'U',
                           style: const TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold),
                         ),
                       ),
@@ -88,7 +235,7 @@ class ProfileScreen extends ConsumerWidget {
                               style: const TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
                             ),
                             Text(
-                              user.role.replaceAll('_', ' ').toUpperCase(),
+                              roleText,
                               style: const TextStyle(color: Colors.white70, fontSize: 12),
                             ),
                           ],
@@ -103,16 +250,16 @@ class ProfileScreen extends ConsumerWidget {
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Text('MEMBERSHIP ID', style: TextStyle(color: Colors.white60, fontSize: 9)),
+                          Text(context.tr('membershipId', ref), style: const TextStyle(color: Colors.white60, fontSize: 9)),
                           Text(mockMemberId, style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 13)),
                         ],
                       ),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Text('REGION', style: TextStyle(color: Colors.white60, fontSize: 9)),
+                          Text(context.tr('region', ref), style: const TextStyle(color: Colors.white60, fontSize: 9)),
                           Text(
-                            user.assignedRegion['district'] ?? 'Tamil Nadu',
+                            localizedDistrict,
                             style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 13),
                           ),
                         ],
@@ -127,13 +274,13 @@ class ProfileScreen extends ConsumerWidget {
             // 2. Personal Information Card
             _buildCardSection(
               context,
-              title: 'Personal Information',
+              title: context.tr('personalContactInfo', ref),
               items: [
-                _buildInfoRow('Full Name', user.fullName),
-                _buildInfoRow('Date of Birth', mockDob),
-                _buildInfoRow('Primary Mobile', user.mobileNumber ?? '+919999999999'),
-                _buildInfoRow('Email Address', mockEmail),
-                _buildInfoRow('State Scope', 'Tamil Nadu, India'),
+                _buildInfoRow(context.tr('fullName', ref), user.fullName),
+                _buildInfoRow(context.tr('dob', ref), mockDob),
+                _buildInfoRow(context.tr('primaryMobile', ref), user.mobileNumber ?? '+919999999999'),
+                _buildInfoRow(context.tr('emailAddress', ref), mockEmail),
+                _buildInfoRow(context.tr('stateScope', ref), isTamil ? 'தமிழ்நாடு, இந்தியா' : 'Tamil Nadu, India'),
               ],
             ),
             const SizedBox(height: 20),
@@ -141,11 +288,11 @@ class ProfileScreen extends ConsumerWidget {
             // 3. Status Card
             _buildCardSection(
               context,
-              title: 'Membership Integrity',
+              title: context.tr('integrityTitle', ref),
               items: [
-                _buildInfoRow('Joined Date', '03/06/2026'),
-                _buildInfoRow('Validation Status', 'APPROVED', valueColor: Colors.green),
-                _buildInfoRow('Security Level', user.role == 'member' ? 'L1 Member Access' : 'L2 Executive Access'),
+                _buildInfoRow(context.tr('joinedDate', ref), '03/06/2026'),
+                _buildInfoRow(context.tr('validationStatus', ref), statusText, valueColor: statusColor),
+                _buildInfoRow(context.tr('securityLevel', ref), user.role == 'member' ? context.tr('l1MemberAccess', ref) : context.tr('l2ExecutiveAccess', ref)),
               ],
             ),
             const SizedBox(height: 20),
@@ -153,11 +300,11 @@ class ProfileScreen extends ConsumerWidget {
             // 4. Emergency Contacts Card
             _buildCardSection(
               context,
-              title: 'SOS Settings & Emergency Contacts',
+              title: context.tr('sosSettingsTitle', ref),
               items: [
-                _buildInfoRow('Primary Responder', 'Local Ward Coordinator'),
-                _buildInfoRow('Secondary Responder', 'Taluk Help Center'),
-                _buildInfoRow('FCM Push Tokens', 'Enabled / Active', valueColor: Colors.teal),
+                _buildInfoRow(context.tr('primaryResponder', ref), context.tr('localCoordinator', ref)),
+                _buildInfoRow(context.tr('secondaryResponder', ref), context.tr('talukHelpCenter', ref)),
+                _buildInfoRow(context.tr('fcmTokens', ref), context.tr('enabledActive', ref), valueColor: Colors.teal),
               ],
             ),
           ],

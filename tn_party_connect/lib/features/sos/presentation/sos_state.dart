@@ -1,7 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:uuid/uuid.dart';
 import '../../../services/location_service.dart';
-import '../../auth/presentation/auth_state.dart';
 
 class SOSAlert {
   final String id;
@@ -40,25 +39,27 @@ class SOSAlert {
 
 class SOSNotifier extends StateNotifier<List<SOSAlert>> {
   final _locationService = LocationService();
-  
-  SOSNotifier() : super([
-    // Prefill a mock active alert for display in leadership dashboards
-    SOSAlert(
-      id: 'mock-sos-1',
-      memberUid: 'member_demo_uid',
-      memberName: 'Arun Mozhi',
-      contactNumber: '+919876543210',
-      latitude: 13.0827,
-      longitude: 80.2707,
-      timestamp: DateTime.now().subtract(const Duration(minutes: 10)),
-      status: 'active',
-    ),
-  ]);
+
+  SOSNotifier()
+      : super([
+          // Prefill a mock active alert for display in leadership dashboards
+          SOSAlert(
+            id: 'mock-sos-1',
+            memberUid: 'member_demo_uid',
+            memberName: 'Arun Mozhi',
+            contactNumber: '+919876543210',
+            latitude: 13.0827,
+            longitude: 80.2707,
+            timestamp: DateTime.now().subtract(const Duration(minutes: 10)),
+            status: 'active',
+          ),
+        ]);
 
   /// Trigger emergency SOS alert
-  Future<void> raiseSOS(String memberUid, String memberName, String phone) async {
+  Future<void> raiseSOS(
+      String memberUid, String memberName, String phone) async {
     final position = await _locationService.getCurrentLocation();
-    
+
     final newAlert = SOSAlert(
       id: const Uuid().v4(),
       memberUid: memberUid,

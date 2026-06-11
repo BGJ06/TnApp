@@ -24,20 +24,28 @@ tasks.register<Delete>("clean") {
 }
 
 subprojects {
-    plugins.withId("com.android.application") {
-        extensions.configure<com.android.build.api.dsl.ApplicationExtension> {
-            compileSdk = 36
+    fun configureProject() {
+        plugins.withId("com.android.application") {
+            extensions.configure<com.android.build.api.dsl.ApplicationExtension> {
+                compileSdk = 36
+            }
+        }
+        plugins.withId("com.android.library") {
+            extensions.configure<com.android.build.api.dsl.LibraryExtension> {
+                compileSdk = 36
+            }
         }
     }
-    plugins.withId("com.android.library") {
-        extensions.configure<com.android.build.api.dsl.LibraryExtension> {
-            compileSdk = 36
+    if (state.executed) {
+        configureProject()
+    } else {
+        afterEvaluate {
+            configureProject()
         }
     }
     tasks.configureEach {
         if (name.contains("checkDebugAarMetadata") || name.contains("checkReleaseAarMetadata")) {
             (this as? VerificationTask)?.ignoreFailures = true
-            actions = emptyList()
         }
     }
 }

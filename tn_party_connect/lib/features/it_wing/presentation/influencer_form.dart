@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/constants.dart';
 import '../../../core/theme.dart';
+import '../../../core/localization.dart';
 
-class InfluencerForm extends StatefulWidget {
+class InfluencerForm extends ConsumerStatefulWidget {
   const InfluencerForm({super.key});
 
   @override
-  State<InfluencerForm> createState() => _InfluencerFormState();
+  ConsumerState<InfluencerForm> createState() => _InfluencerFormState();
 }
 
-class _InfluencerFormState extends State<InfluencerForm> {
+class _InfluencerFormState extends ConsumerState<InfluencerForm> {
   final _formKey = GlobalKey<FormState>();
 
   // Text Controllers
@@ -32,6 +34,19 @@ class _InfluencerFormState extends State<InfluencerForm> {
 
   // Skills capability mapping
   final List<String> _selectedSkills = [];
+
+  final Map<String, String> _skillTamilNames = {
+    'Graphic Design': 'கிராஃபிக் வடிவமைப்பு',
+    'Video Editing': 'வீடியோ எடிட்டிங்',
+    'Photography': 'புகைப்படம் எடுத்தல்',
+    'Videography': 'வீடியோகிராபி',
+    'Public Speaking': 'பேச்சாற்றல்',
+    'Content Writing': 'எழுத்தாற்றல்',
+    'Social Media Management': 'சமூக ஊடக மேலாண்மை',
+    'Web Development': 'இணையதள மேம்பாடு',
+    'App Development': 'செயலி மேம்பாடு',
+    'Campaign Management': 'பிரச்சார மேலாண்மை',
+  };
 
   @override
   void dispose() {
@@ -63,10 +78,25 @@ class _InfluencerFormState extends State<InfluencerForm> {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final isTamil = ref.watch(languageProvider) == AppLanguage.tamil;
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('IT Wing Registry Form'),
+        title: Text(context.tr('itWingFormTitle', ref)),
+        actions: [
+          // Language Switcher Toggle button
+          TextButton.icon(
+            onPressed: () {
+              ref.read(languageProvider.notifier).toggleLanguage();
+            },
+            icon: const Icon(Icons.language, color: Colors.white, size: 18),
+            label: Text(
+              isTamil ? 'English' : 'தமிழ்',
+              style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+            ),
+          ),
+          const SizedBox(width: 8),
+        ],
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(24),
@@ -75,72 +105,72 @@ class _InfluencerFormState extends State<InfluencerForm> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              const Text(
-                'Personal & Contact Information',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              Text(
+                context.tr('personalContactInfo', ref),
+                style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 12),
               TextFormField(
                 controller: _nameController,
-                decoration: const InputDecoration(
-                  labelText: 'Full Name',
-                  prefixIcon: Icon(Icons.person),
-                  border: OutlineInputBorder(),
+                decoration: InputDecoration(
+                  labelText: context.tr('fullName', ref),
+                  prefixIcon: const Icon(Icons.person),
+                  border: const OutlineInputBorder(),
                 ),
-                validator: (val) => val == null || val.isEmpty ? 'Required' : null,
+                validator: (val) => val == null || val.isEmpty ? context.tr('required', ref) : null,
               ),
               const SizedBox(height: 12),
               TextFormField(
                 controller: _mobileController,
                 keyboardType: TextInputType.phone,
-                decoration: const InputDecoration(
-                  labelText: 'Mobile Number',
-                  prefixIcon: Icon(Icons.phone),
-                  border: OutlineInputBorder(),
+                decoration: InputDecoration(
+                  labelText: context.tr('mobileNumber', ref),
+                  prefixIcon: const Icon(Icons.phone),
+                  border: const OutlineInputBorder(),
                 ),
-                validator: (val) => val == null || val.isEmpty ? 'Required' : null,
+                validator: (val) => val == null || val.isEmpty ? context.tr('required', ref) : null,
               ),
               const SizedBox(height: 12),
               TextFormField(
                 controller: _emailController,
                 keyboardType: TextInputType.emailAddress,
-                decoration: const InputDecoration(
-                  labelText: 'Email Address',
-                  prefixIcon: Icon(Icons.email),
-                  border: OutlineInputBorder(),
+                decoration: InputDecoration(
+                  labelText: context.tr('emailAddress', ref),
+                  prefixIcon: const Icon(Icons.email),
+                  border: const OutlineInputBorder(),
                 ),
               ),
               const SizedBox(height: 24),
 
-              const Text(
-                'Operating Region',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              Text(
+                context.tr('operatingRegion', ref),
+                style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 12),
               TextFormField(
                 controller: _districtController,
-                decoration: const InputDecoration(
-                  labelText: 'District',
-                  prefixIcon: Icon(Icons.map),
-                  border: OutlineInputBorder(),
+                decoration: InputDecoration(
+                  labelText: context.tr('districtLabel', ref),
+                  prefixIcon: const Icon(Icons.map),
+                  border: const OutlineInputBorder(),
                 ),
-                validator: (val) => val == null || val.isEmpty ? 'Required' : null,
+                validator: (val) => val == null || val.isEmpty ? context.tr('required', ref) : null,
               ),
               const SizedBox(height: 12),
               TextFormField(
                 controller: _talukController,
-                decoration: const InputDecoration(
-                  labelText: 'Taluk',
-                  prefixIcon: Icon(Icons.location_city),
-                  border: OutlineInputBorder(),
+                decoration: InputDecoration(
+                  labelText: context.tr('talukLabel', ref),
+                  prefixIcon: const Icon(Icons.location_city),
+                  border: const OutlineInputBorder(),
                 ),
-                validator: (val) => val == null || val.isEmpty ? 'Required' : null,
+                validator: (val) => val == null || val.isEmpty ? context.tr('required', ref) : null,
               ),
               const SizedBox(height: 24),
 
-              const Text(
-                'Social Media Information & Analytics',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              Text(
+                context.tr('socialMediaAnalytics', ref),
+                style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 12),
               TextFormField(
@@ -194,11 +224,11 @@ class _InfluencerFormState extends State<InfluencerForm> {
                     child: TextFormField(
                       controller: _followersController,
                       keyboardType: TextInputType.number,
-                      decoration: const InputDecoration(
-                        labelText: 'Follower Count',
-                        border: OutlineInputBorder(),
+                      decoration: InputDecoration(
+                        labelText: context.tr('followersCount', ref),
+                        border: const OutlineInputBorder(),
                       ),
-                      validator: (val) => val == null || val.isEmpty ? 'Required' : null,
+                      validator: (val) => val == null || val.isEmpty ? context.tr('required', ref) : null,
                     ),
                   ),
                   const SizedBox(width: 12),
@@ -206,20 +236,20 @@ class _InfluencerFormState extends State<InfluencerForm> {
                     child: TextFormField(
                       controller: _reachController,
                       keyboardType: TextInputType.number,
-                      decoration: const InputDecoration(
-                        labelText: 'Est. Weekly Reach',
-                        border: OutlineInputBorder(),
+                      decoration: InputDecoration(
+                        labelText: context.tr('reachLabel', ref),
+                        border: const OutlineInputBorder(),
                       ),
-                      validator: (val) => val == null || val.isEmpty ? 'Required' : null,
+                      validator: (val) => val == null || val.isEmpty ? context.tr('required', ref) : null,
                     ),
                   ),
                 ],
               ),
               const SizedBox(height: 24),
 
-              const Text(
-                'Digital Skill Capabilities',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              Text(
+                context.tr('digitalSkills', ref),
+                style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 12),
               Wrap(
@@ -227,8 +257,9 @@ class _InfluencerFormState extends State<InfluencerForm> {
                 runSpacing: 8,
                 children: AppConstants.influencerSkills.map((skill) {
                   final isSelected = _selectedSkills.contains(skill);
+                  final displaySkill = isTamil ? (_skillTamilNames[skill] ?? skill) : skill;
                   return FilterChip(
-                    label: Text(skill),
+                    label: Text(displaySkill),
                     selected: isSelected,
                     selectedColor: AppTheme.primary.withOpacity(0.2),
                     checkmarkColor: AppTheme.primary,
@@ -242,12 +273,12 @@ class _InfluencerFormState extends State<InfluencerForm> {
                 onPressed: () {
                   if (_formKey.currentState!.validate()) {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('IT Wing Profile Submitted Successfully!')),
+                      SnackBar(content: Text(context.tr('itWingSuccess', ref))),
                     );
                     Navigator.pop(context);
                   }
                 },
-                child: const Text('Submit Application'),
+                child: Text(context.tr('submitApplication', ref)),
               ),
             ],
           ),

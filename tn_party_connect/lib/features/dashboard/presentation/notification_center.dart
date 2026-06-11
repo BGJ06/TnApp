@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../auth/presentation/auth_state.dart';
+import '../../../core/routes.dart';
 import '../../../core/theme.dart';
 
 class NotificationItem {
@@ -19,11 +22,63 @@ class NotificationItem {
   });
 }
 
-class NotificationCenter extends StatelessWidget {
+class NotificationCenter extends ConsumerWidget {
   const NotificationCenter({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final authState = ref.watch(authStateProvider);
+    final isGuest = authState is! AuthAuthenticated;
+
+    if (isGuest) {
+      return Scaffold(
+        appBar: AppBar(
+          title: const Text('Notifications Center'),
+        ),
+        body: Center(
+          child: Padding(
+            padding: const EdgeInsets.all(24.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                const Icon(
+                  Icons.notifications_off_outlined,
+                  size: 80,
+                  color: AppTheme.accent,
+                ),
+                const SizedBox(height: 24),
+                const Text(
+                  'Notifications Login Required',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 12),
+                const Text(
+                  'To view your regional announcements, push notifications, and task assignments, please log in.',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: Colors.grey,
+                  ),
+                ),
+                const SizedBox(height: 40),
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.pushNamed(context, AppRoutes.login);
+                  },
+                  child: const Text('Log In / Register'),
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+    }
+
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     // Mock timeline list items matching required sections

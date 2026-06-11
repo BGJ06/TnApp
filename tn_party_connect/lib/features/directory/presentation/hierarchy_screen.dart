@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/theme.dart';
+import '../../../core/localization.dart';
 
-class HierarchyScreen extends StatefulWidget {
+class HierarchyScreen extends ConsumerStatefulWidget {
   const HierarchyScreen({super.key});
 
   @override
-  State<HierarchyScreen> createState() => _HierarchyScreenState();
+  ConsumerState<HierarchyScreen> createState() => _HierarchyScreenState();
 }
 
-class _HierarchyScreenState extends State<HierarchyScreen> {
+class _HierarchyScreenState extends ConsumerState<HierarchyScreen> {
   // Collapsible state tracking map
   final Map<String, bool> _expansionStates = {};
 
@@ -25,57 +27,72 @@ class _HierarchyScreenState extends State<HierarchyScreen> {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final isTamil = ref.watch(languageProvider) == AppLanguage.tamil;
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Organizational Hierarchy'),
+        title: Text(context.tr('organizationalHierarchy', ref)),
+        actions: [
+          // Language Switcher Toggle button
+          TextButton.icon(
+            onPressed: () {
+              ref.read(languageProvider.notifier).toggleLanguage();
+            },
+            icon: const Icon(Icons.language, color: Colors.white, size: 18),
+            label: Text(
+              isTamil ? 'English' : 'தமிழ்',
+              style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+            ),
+          ),
+          const SizedBox(width: 8),
+        ],
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
-              'Party Hierarchy Tree Explorer',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            Text(
+              context.tr('hierarchyTreeExplorer', ref),
+              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
-            const Text(
-              'Expand nodes to explore administrative divisions of Tamil Nadu.',
-              style: TextStyle(color: Colors.grey, fontSize: 13),
+            Text(
+              context.tr('hierarchyTreeDesc', ref),
+              style: const TextStyle(color: Colors.grey, fontSize: 13),
             ),
             const SizedBox(height: 24),
 
             // Base Root (Level 0: Tamil Nadu State Command)
             _buildNode(
-              title: 'Tamil Nadu (State Command)',
-              subtitle: 'State Executive Committee',
+              title: isTamil ? 'தமிழ்நாடு (மாநில தலைமை)' : 'Tamil Nadu (State Command)',
+              subtitle: isTamil ? 'மாநில செயற்குழு' : 'State Executive Committee',
               level: 0,
               expandedKey: 'state_root',
               children: [
                 // Level 1: Chennai District
                 _buildNode(
-                  title: 'Chennai District',
-                  subtitle: 'District Secretariat',
+                  title: isTamil ? 'சென்னை மாவட்டம்' : 'Chennai District',
+                  subtitle: isTamil ? 'மாவட்ட செயலகம்' : 'District Secretariat',
                   level: 1,
                   expandedKey: 'dist_chennai',
                   children: [
                     // Level 2: Egmore Taluk
                     _buildNode(
-                      title: 'Egmore Taluk',
-                      subtitle: 'Taluk Coordinating Committee',
+                      title: isTamil ? 'எழும்பூர் தாலுகா' : 'Egmore Taluk',
+                      subtitle: isTamil ? 'தாலுகா ஒருங்கிணைப்புக் குழு' : 'Taluk Coordinating Committee',
                       level: 2,
                       expandedKey: 'tal_egmore',
                       children: [
                         // Level 3: Ward 119
                         _buildNode(
-                          title: 'Ward 119',
-                          subtitle: 'Ward Unit Committee (1,240 Members)',
+                          title: isTamil ? 'வார்டு 119' : 'Ward 119',
+                          subtitle: isTamil ? 'வார்டு அலகுக் குழு (1,240 உறுப்பினர்கள்)' : 'Ward Unit Committee (1,240 Members)',
                           level: 3,
                           expandedKey: 'ward_119',
                         ),
                         _buildNode(
-                          title: 'Ward 120',
-                          subtitle: 'Ward Unit Committee (980 Members)',
+                          title: isTamil ? 'வார்டு 120' : 'Ward 120',
+                          subtitle: isTamil ? 'வார்டு அலகுக் குழு (980 உறுப்பினர்கள்)' : 'Ward Unit Committee (980 Members)',
                           level: 3,
                           expandedKey: 'ward_120',
                         ),
@@ -83,14 +100,14 @@ class _HierarchyScreenState extends State<HierarchyScreen> {
                     ),
                     // Level 2: Mylapore Taluk
                     _buildNode(
-                      title: 'Mylapore Taluk',
-                      subtitle: 'Taluk Committee',
+                      title: isTamil ? 'மயிலாப்பூர் தாலுகா' : 'Mylapore Taluk',
+                      subtitle: isTamil ? 'தாலுகாக் குழு' : 'Taluk Committee',
                       level: 2,
                       expandedKey: 'tal_mylapore',
                       children: [
                         _buildNode(
-                          title: 'Ward 142',
-                          subtitle: 'Ward Unit (750 Members)',
+                          title: isTamil ? 'வார்டு 142' : 'Ward 142',
+                          subtitle: isTamil ? 'வார்டு அலகு (750 உறுப்பினர்கள்)' : 'Ward Unit (750 Members)',
                           level: 3,
                           expandedKey: 'ward_142',
                         ),
@@ -101,20 +118,20 @@ class _HierarchyScreenState extends State<HierarchyScreen> {
                 
                 // Level 1: Madurai District
                 _buildNode(
-                  title: 'Madurai District',
-                  subtitle: 'District Committee',
+                  title: isTamil ? 'மதுரை மாவட்டம்' : 'Madurai District',
+                  subtitle: isTamil ? 'மாவட்டக் குழு' : 'District Committee',
                   level: 1,
                   expandedKey: 'dist_madurai',
                   children: [
                     _buildNode(
-                      title: 'Melur Taluk',
-                      subtitle: 'Taluk Committee',
+                      title: isTamil ? 'மேலூர் தாலுகா' : 'Melur Taluk',
+                      subtitle: isTamil ? 'தாலுகாக் குழு' : 'Taluk Committee',
                       level: 2,
                       expandedKey: 'tal_melur',
                       children: [
                         _buildNode(
-                          title: 'Ward 5',
-                          subtitle: 'Ward Unit (610 Members)',
+                          title: isTamil ? 'வார்டு 5' : 'Ward 5',
+                          subtitle: isTamil ? 'வார்டு அலகு (610 உறுப்பினர்கள்)' : 'Ward Unit (610 Members)',
                           level: 3,
                           expandedKey: 'ward_5',
                         ),
@@ -125,14 +142,14 @@ class _HierarchyScreenState extends State<HierarchyScreen> {
 
                 // Level 1: Coimbatore District
                 _buildNode(
-                  title: 'Coimbatore District',
-                  subtitle: 'District Committee',
+                  title: isTamil ? 'கோயம்புத்தூர் மாவட்டம்' : 'Coimbatore District',
+                  subtitle: isTamil ? 'மாவட்டக் குழு' : 'District Committee',
                   level: 1,
                   expandedKey: 'dist_coimbatore',
                   children: [
                     _buildNode(
-                      title: 'Pollachi Taluk',
-                      subtitle: 'Taluk Committee',
+                      title: isTamil ? 'பொள்ளாச்சி தாலுகா' : 'Pollachi Taluk',
+                      subtitle: isTamil ? 'தாலுகாக் குழு' : 'Taluk Committee',
                       level: 2,
                       expandedKey: 'tal_pollachi',
                     ),

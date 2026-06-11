@@ -16,7 +16,8 @@ class AuthLoading extends AuthState {
 class AuthOTPSent extends AuthState {
   final String verificationId;
   final String phoneNumber;
-  const AuthOTPSent(this.verificationId, this.phoneNumber);
+  final bool isRegistering;
+  const AuthOTPSent(this.verificationId, this.phoneNumber, this.isRegistering);
 }
 
 class AuthNeedsRegistration extends AuthState {
@@ -56,13 +57,13 @@ class AuthNotifier extends StateNotifier<AuthState> {
   }
 
   /// Request Phone OTP for Member registration/login
-  Future<void> sendMemberOTP(String mobileNumber) async {
+  Future<void> sendMemberOTP(String mobileNumber, {required bool isRegistering}) async {
     state = const AuthLoading();
     try {
       await _repository.requestOTP(
         mobileNumber,
         onCodeSent: (verId) {
-          state = AuthOTPSent(verId, mobileNumber);
+          state = AuthOTPSent(verId, mobileNumber, isRegistering);
         },
         onVerificationFailed: (e) {
           state = AuthError(e.message ?? "Phone authentication failed.");
@@ -77,7 +78,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
   }
 
   /// Verify mobile OTP code
-  Future<void> verifyMemberOTP(String verificationId, String smsCode) async {
+  Future<void> verifyMemberOTP(String verificationId, String smsCode, {required bool isRegistering}) async {
     state = const AuthLoading();
     try {
       final user = await _repository.verifyOTP(verificationId, smsCode);
@@ -87,7 +88,13 @@ class AuthNotifier extends StateNotifier<AuthState> {
       }
 
       if (user.fullName == 'New Member') {
-        state = AuthNeedsRegistration(user.uid, user.mobileNumber ?? '');
+        if (!isRegistering) {
+          // Attempted login but not registered
+          state = const AuthError("This mobile number is not registered. Please select 'Register as New Person' to sign up.");
+          await _repository.logout();
+        } else {
+          state = AuthNeedsRegistration(user.uid, user.mobileNumber ?? '');
+        }
       } else {
         state = AuthAuthenticated(user);
       }
@@ -140,6 +147,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
           'ward': ward,
         },
         mobileNumber: mobileNumber,
+        status: 'pending',
       );
       state = AuthAuthenticated(user);
     } catch (e) {

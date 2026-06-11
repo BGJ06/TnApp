@@ -28,10 +28,10 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
 
     _fadeController.forward();
 
-    // Route to Login Screen after 3.5 seconds
-    Timer(const Duration(seconds: 3500), () {
+    // Route to Navigation Holder Screen after 2.0 seconds
+    Timer(const Duration(milliseconds: 2000), () {
       if (mounted) {
-        Navigator.pushReplacementNamed(context, AppRoutes.login);
+        Navigator.pushReplacementNamed(context, AppRoutes.navigationHolder);
       }
     });
   }

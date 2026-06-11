@@ -3,7 +3,7 @@ import 'package:flutter/foundation.dart';
 import '../main.dart';
 
 class NotificationService {
-  final FirebaseMessaging _fcm = FirebaseMessaging.instance;
+  FirebaseMessaging get _fcm => FirebaseMessaging.instance;
 
   Future<void> initialize() async {
     if (isFirebaseMocked) {

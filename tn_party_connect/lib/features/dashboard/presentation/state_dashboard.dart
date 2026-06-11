@@ -21,8 +21,10 @@ class StateDashboard extends ConsumerWidget {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     // Separate active and resolved alerts
-    final activeAlerts = sosAlerts.where((a) => a.status != 'resolved').toList();
-    final resolvedAlerts = sosAlerts.where((a) => a.status == 'resolved').toList();
+    final activeAlerts =
+        sosAlerts.where((a) => a.status != 'resolved').toList();
+    final resolvedAlerts =
+        sosAlerts.where((a) => a.status == 'resolved').toList();
 
     return Scaffold(
       appBar: AppBar(
@@ -104,14 +106,18 @@ class StateDashboard extends ConsumerWidget {
                 ),
                 if (activeAlerts.isNotEmpty)
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                     decoration: BoxDecoration(
                       color: Colors.red,
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Text(
                       '${activeAlerts.length} CRITICAL',
-                      style: const TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.bold),
+                      style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 10,
+                          fontWeight: FontWeight.bold),
                     ),
                   ),
               ],
@@ -122,7 +128,9 @@ class StateDashboard extends ConsumerWidget {
                 child: Padding(
                   padding: EdgeInsets.all(24),
                   child: Center(
-                    child: Text('No active emergency SOS requests reported at this time.', style: TextStyle(color: Colors.grey)),
+                    child: Text(
+                        'No active emergency SOS requests reported at this time.',
+                        style: TextStyle(color: Colors.grey)),
                   ),
                 ),
               )
@@ -137,7 +145,8 @@ class StateDashboard extends ConsumerWidget {
                     margin: const EdgeInsets.only(bottom: 12),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(16),
-                      side: BorderSide(color: Colors.red.withOpacity(0.5), width: 1),
+                      side: BorderSide(
+                          color: Colors.red.withValues(alpha: 0.5), width: 1),
                     ),
                     child: Padding(
                       padding: const EdgeInsets.all(16),
@@ -149,12 +158,15 @@ class StateDashboard extends ConsumerWidget {
                             children: [
                               Text(
                                 alert.memberName,
-                                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.bold, fontSize: 18),
                               ),
                               Text(
                                 alert.status.toUpperCase(),
                                 style: TextStyle(
-                                  color: alert.status == 'active' ? Colors.red : Colors.orange,
+                                  color: alert.status == 'active'
+                                      ? Colors.red
+                                      : Colors.orange,
                                   fontWeight: FontWeight.bold,
                                   fontSize: 12,
                                 ),
@@ -164,15 +176,18 @@ class StateDashboard extends ConsumerWidget {
                           const SizedBox(height: 8),
                           Row(
                             children: [
-                              const Icon(Icons.phone, size: 16, color: Colors.grey),
+                              const Icon(Icons.phone,
+                                  size: 16, color: Colors.grey),
                               const SizedBox(width: 6),
-                              Text(alert.contactNumber, style: const TextStyle(color: Colors.grey)),
+                              Text(alert.contactNumber,
+                                  style: const TextStyle(color: Colors.grey)),
                             ],
                           ),
                           const SizedBox(height: 4),
                           Row(
                             children: [
-                              const Icon(Icons.location_on, size: 16, color: Colors.grey),
+                              const Icon(Icons.location_on,
+                                  size: 16, color: Colors.grey),
                               const SizedBox(width: 6),
                               Text(
                                 'GPS: ${alert.latitude.toStringAsFixed(4)}, ${alert.longitude.toStringAsFixed(4)}',
@@ -187,22 +202,31 @@ class StateDashboard extends ConsumerWidget {
                                 Expanded(
                                   child: OutlinedButton.icon(
                                     onPressed: () {
-                                      ref.read(sosProvider.notifier).updateAlertStatus(alert.id, 'acknowledged');
+                                      ref
+                                          .read(sosProvider.notifier)
+                                          .updateAlertStatus(
+                                              alert.id, 'acknowledged');
                                     },
                                     icon: const Icon(Icons.check, size: 16),
                                     label: const Text('Acknowledge'),
-                                    style: OutlinedButton.styleFrom(foregroundColor: Colors.orange),
+                                    style: OutlinedButton.styleFrom(
+                                        foregroundColor: Colors.orange),
                                   ),
                                 ),
                               const SizedBox(width: 8),
                               Expanded(
                                 child: ElevatedButton.icon(
                                   onPressed: () {
-                                    ref.read(sosProvider.notifier).updateAlertStatus(alert.id, 'resolved');
+                                    ref
+                                        .read(sosProvider.notifier)
+                                        .updateAlertStatus(
+                                            alert.id, 'resolved');
                                   },
-                                  icon: const Icon(Icons.done_all, size: 16, color: Colors.white),
+                                  icon: const Icon(Icons.done_all,
+                                      size: 16, color: Colors.white),
                                   label: const Text('Mark Resolved'),
-                                  style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
+                                  style: ElevatedButton.styleFrom(
+                                      backgroundColor: Colors.green),
                                 ),
                               ),
                             ],
@@ -217,15 +241,19 @@ class StateDashboard extends ConsumerWidget {
 
             // IT & Influencer Portal Navigation Banner
             Card(
-              color: isDark ? AppTheme.surfaceDark : AppTheme.primary.withOpacity(0.08),
+              color: isDark
+                  ? AppTheme.surfaceDark
+                  : AppTheme.primary.withValues(alpha: 0.08),
               child: ListTile(
                 contentPadding: const EdgeInsets.all(20),
-                leading: const Icon(Icons.troubleshoot, size: 40, color: Colors.teal),
+                leading: const Icon(Icons.troubleshoot,
+                    size: 40, color: Colors.teal),
                 title: const Text(
                   'IT Wing Search Matrix',
                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
                 ),
-                subtitle: const Text('Search and filter digital content writers, videographers, and graphic designers across Tamil Nadu.'),
+                subtitle: const Text(
+                    'Search and filter digital content writers, videographers, and graphic designers across Tamil Nadu.'),
                 trailing: const Icon(Icons.arrow_forward),
                 onTap: () {
                   Navigator.pushNamed(context, AppRoutes.influencerSearch);
@@ -238,7 +266,8 @@ class StateDashboard extends ConsumerWidget {
     );
   }
 
-  Widget _buildStatCard(BuildContext context, {
+  Widget _buildStatCard(
+    BuildContext context, {
     required String title,
     required String value,
     required IconData icon,
@@ -258,13 +287,17 @@ class StateDashboard extends ConsumerWidget {
                 Icon(icon, color: color, size: 28),
                 Text(
                   value,
-                  style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  style: const TextStyle(
+                      fontSize: 20, fontWeight: FontWeight.bold),
                 ),
               ],
             ),
             Text(
               title,
-              style: TextStyle(color: isDark ? Colors.white60 : Colors.grey[700], fontSize: 12, fontWeight: FontWeight.w500),
+              style: TextStyle(
+                  color: isDark ? Colors.white60 : Colors.grey[700],
+                  fontSize: 12,
+                  fontWeight: FontWeight.w500),
             ),
           ],
         ),
