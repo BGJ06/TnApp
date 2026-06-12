@@ -423,110 +423,7 @@ class _DirectoryScreenState extends ConsumerState<DirectoryScreen> {
     ),
   ];
 
-  final Map<String, String> _districtTamilNames = {
-    'Ariyalur': 'அரியலூர்',
-    'Chengalpattu': 'செங்கல்பட்டு',
-    'Chennai': 'சென்னை',
-    'Coimbatore': 'கோயம்புத்தூர்',
-    'Cuddalore': 'கடலூர்',
-    'Dharmapuri': 'தர்மபுரி',
-    'Dindigul': 'திண்டுக்கல்',
-    'Erode': 'ஈரோடு',
-    'Kallakurichi': 'கள்ளக்குறிச்சி',
-    'Kanchipuram': 'காஞ்சிபுரம்',
-    'Kanyakumari': 'கன்னியாகுமரி',
-    'Karur': 'கரூர்',
-    'Krishnagiri': 'கிருஷ்ணகிரி',
-    'Madurai': 'மதுரை',
-    'Mayiladuthurai': 'மயிலாடுதுறை',
-    'Nagapattinam': 'நாகப்பட்டினம்',
-    'Namakkal': 'நாமக்கல்',
-    'Nilgiris': 'நீலகிரி',
-    'Perambalur': 'பெரம்பலூர்',
-    'Pudukkottai': 'புதுக்கோட்டை',
-    'Ramanathapuram': 'இராமநாதபுரம்',
-    'Ranipet': 'ராணிப்பேட்டை',
-    'Salem': 'சேலம்',
-    'Sivaganga': 'சிவகங்கை',
-    'Tenkasi': 'தென்காசி',
-    'Thanjavur': 'தஞ்சாவூர்',
-    'Theni': 'தேனி',
-    'Thoothukudi': 'தூத்துக்குடி',
-    'Tiruchirappalli': 'திருச்சிராப்பள்ளி',
-    'Tirunelveli': 'திருநெல்வேலி',
-    'Tirupathur': 'திருப்பத்தூர்',
-    'Tiruppur': 'திருப்பூர்',
-    'Tiruvallur': 'திருவள்ளூர்',
-    'Tiruvannamalai': 'திருவண்ணாமலை',
-    'Tiruvarur': 'திருவாரூர்',
-    'Vellore': 'வேலூர்',
-    'Viluppuram': 'விழுப்புரம்',
-    'Virudhunagar': 'விருதுநகர்',
-  };
 
-  final Map<String, String> _positionTamilNames = {
-    'State President': 'மாநிலத் தலைவர்',
-    'State General Secretary': 'மாநிலப் பொதுச் செயலாளர்',
-    'State IT Wing Head': 'மாநில IT பிரிவுத் தலைவர்',
-    'District Head': 'மாவட்டத் தலைவர்',
-    'Taluk Head': 'தாலுகா தலைவர்',
-    'Ward Head': 'வார்டு தலைவர்',
-    'Area Coordinator': 'பகுதி ஒருங்கிணைப்பாளர்',
-    'Helping Person (Active)': 'உதவி செய்யும் நபர் (செயலில்)',
-  };
-
-  final Map<String, String> _regionTamilNames = {
-    'Tamil Nadu (Statewide)': 'தமிழ்நாடு (மாநிலம் முழுவதும்)',
-    'Chennai District': 'சென்னை மாவட்டம்',
-    'Egmore Taluk': 'எழும்பூர் தாலுகா',
-    'Ward 119 (Egmore)': 'வார்டு 119 (எழும்பூர்)',
-    'Coimbatore District': 'கோயம்புத்தூர் மாவட்டம்',
-    'Madurai District': 'மதுரை மாவட்டம்',
-    'Melur Taluk': 'மேலூர் தாலுகா',
-    'Salem District': 'சேலம் மாவட்டம்',
-    'Trichy District': 'திருச்சி மாவட்டம்',
-    'Thanjavur District': 'தஞ்சாவூர் மாவட்டம்',
-    'Tirunelveli District': 'திருநெல்வேலி மாவட்டம்',
-    'Vellore District': 'வேலூர் மாவட்டம்',
-    'Erode District': 'ஈரோடு மாவட்டம்',
-    'Kanyakumari District': 'கன்னியாகுமரி மாவட்டம்',
-    'Ariyalur District': 'அரியலூர் மாவட்டம்',
-    'Chengalpattu District': 'செங்கல்பட்டு மாவட்டம்',
-    'Cuddalore District': 'கடலூர் மாவட்டம்',
-    'Dharmapuri District': 'தர்மபுரி மாவட்டம்',
-    'Dindigul District': 'திண்டுக்கல் மாவட்டம்',
-    'Kallakurichi District': 'கள்ளக்குறிச்சி மாவட்டம்',
-    'Kanchipuram District': 'காஞ்சிபுரம் மாவட்டம்',
-    'Karur District': 'கரூர் மாவட்டம்',
-    'Krishnagiri District': 'கிருஷ்ணகிரி மாவட்டம்',
-    'Mayiladuthurai District': 'மயிலாடுதுறை மாவட்டம்',
-    'Nagapattinam District': 'நாகப்பட்டினம் மாவட்டம்',
-    'Namakkal District': 'நாமக்கல் மாவட்டம்',
-    'Nilgiris District': 'நீலகிரி மாவட்டம்',
-    'Perambalur District': 'பெரம்பலூர் மாவட்டம்',
-    'Pudukkottai District': 'புதுக்கோட்டை மாவட்டம்',
-    'Ramanathapuram District': 'இராமநாதபுரம் மாவட்டம்',
-    'Ranipet District': 'ராணிப்பேட்டை மாவட்டம்',
-    'Sivaganga District': 'சிவகங்கை மாவட்டம்',
-    'Tenkasi District': 'தென்காசி மாவட்டம்',
-    'Theni District': 'தேனி மாவட்டம்',
-    'Thoothukudi District': 'தூத்துக்குடி மாவட்டம்',
-    'Tirupathur District': 'திருப்பத்தூர் மாவட்டம்',
-    'Tiruppur District': 'திருப்பூர் மாவட்டம்',
-    'Tiruvallur District': 'திருவள்ளூர் மாவட்டம்',
-    'Tiruvannamalai District': 'திருவண்ணாமலை மாவட்டம்',
-    'Tiruvarur District': 'திருவாரூர் மாவட்டம்',
-    'Viluppuram District': 'விழுப்புரம் மாவட்டம்',
-    'Virudhunagar District': 'விருதுநகர் மாவட்டம்',
-    'Virudhunagar Main': 'விருதுநகர் மெயின்',
-    'Soolakkarai Area': 'சூலக்கரை பகுதி',
-    'Allampatti Area': 'அல்லம்பட்டி பகுதி',
-    'Pandian Nagar Area': 'பாண்டியன் நகர் பகுதி',
-    'Ramalingapuram Village': 'ராமலிங்கபுரம் கிராமம்',
-    'Sattur Town Area': 'சாத்தூர் நகர பகுதி',
-    'Virudhunagar Taluk': 'விருதுநகர் தாலுகா',
-    'Sattur Taluk': 'சாத்தூர் தாலுகா',
-  };
 
   @override
   void initState() {
@@ -629,7 +526,7 @@ class _DirectoryScreenState extends ConsumerState<DirectoryScreen> {
         filteredLeaders.add(DirectoryLeader(
           name: _generateDeterministicName(_selectedDistrict, 1, false, isTamil),
           position: 'District Head',
-          region: isTamil ? '${_districtTamilNames[_selectedDistrict] ?? _selectedDistrict} மாவட்டம்' : '$_selectedDistrict District',
+          region: isTamil ? '${context.trDistrict(_selectedDistrict, ref)} மாவட்டம்' : '$_selectedDistrict District',
           district: _selectedDistrict,
           taluk: 'All',
           village: 'All',
@@ -637,7 +534,7 @@ class _DirectoryScreenState extends ConsumerState<DirectoryScreen> {
         filteredLeaders.add(DirectoryLeader(
           name: _generateDeterministicName(_selectedDistrict, 2, true, isTamil),
           position: 'District Co-Head',
-          region: isTamil ? '${_districtTamilNames[_selectedDistrict] ?? _selectedDistrict} மாவட்டம்' : '$_selectedDistrict District',
+          region: isTamil ? '${context.trDistrict(_selectedDistrict, ref)} மாவட்டம்' : '$_selectedDistrict District',
           district: _selectedDistrict,
           taluk: 'All',
           village: 'All',
@@ -645,7 +542,7 @@ class _DirectoryScreenState extends ConsumerState<DirectoryScreen> {
         filteredLeaders.add(DirectoryLeader(
           name: _generateDeterministicName(_selectedDistrict, 3, false, isTamil),
           position: 'Helping Person (Active)',
-          region: isTamil ? '${_districtTamilNames[_selectedDistrict] ?? _selectedDistrict} மாவட்டம்' : '$_selectedDistrict District',
+          region: isTamil ? '${context.trDistrict(_selectedDistrict, ref)} மாவட்டம்' : '$_selectedDistrict District',
           district: _selectedDistrict,
           taluk: 'All',
           village: 'All',
@@ -663,7 +560,7 @@ class _DirectoryScreenState extends ConsumerState<DirectoryScreen> {
             orElse: () => DirectoryLeader(
               name: _generateDeterministicName(taluk, 4, false, isTamil),
               position: 'Taluk Head',
-              region: isTamil ? '$taluk தாலுகா' : '$taluk Taluk',
+              region: isTamil ? '${context.trTaluk(taluk, ref)} தாலுகா' : '$taluk Taluk',
               district: _selectedDistrict,
               taluk: taluk,
               village: 'All',
@@ -686,7 +583,7 @@ class _DirectoryScreenState extends ConsumerState<DirectoryScreen> {
             filteredLeaders.add(DirectoryLeader(
               name: _generateDeterministicName(_selectedTaluk, 5, true, isTamil),
               position: 'Helping Person (Active)',
-              region: isTamil ? '$_selectedTaluk தாலுகா' : '$_selectedTaluk Taluk',
+              region: isTamil ? '${context.trTaluk(_selectedTaluk, ref)} தாலுகா' : '$_selectedTaluk Taluk',
               district: _selectedDistrict,
               taluk: _selectedTaluk,
               village: 'All',
@@ -697,7 +594,7 @@ class _DirectoryScreenState extends ConsumerState<DirectoryScreen> {
           filteredLeaders.add(DirectoryLeader(
             name: _generateDeterministicName(_selectedTaluk, 4, false, isTamil),
             position: 'Taluk Head',
-            region: isTamil ? '$_selectedTaluk தாலுகா' : '$_selectedTaluk Taluk',
+            region: isTamil ? '${context.trTaluk(_selectedTaluk, ref)} தாலுகா' : '$_selectedTaluk Taluk',
             district: _selectedDistrict,
             taluk: _selectedTaluk,
             village: 'All',
@@ -705,7 +602,7 @@ class _DirectoryScreenState extends ConsumerState<DirectoryScreen> {
           filteredLeaders.add(DirectoryLeader(
             name: _generateDeterministicName(_selectedTaluk, 5, true, isTamil),
             position: 'Helping Person (Active)',
-            region: isTamil ? '$_selectedTaluk தாலுகா' : '$_selectedTaluk Taluk',
+            region: isTamil ? '${context.trTaluk(_selectedTaluk, ref)} தாலுகா' : '$_selectedTaluk Taluk',
             district: _selectedDistrict,
             taluk: _selectedTaluk,
             village: 'All',
@@ -730,7 +627,7 @@ class _DirectoryScreenState extends ConsumerState<DirectoryScreen> {
               filteredLeaders.add(DirectoryLeader(
                 name: _generateDeterministicName(village, 6, false, isTamil),
                 position: 'Area Coordinator',
-                region: isTamil ? '$village கிராமம்' : '$village Village',
+                region: isTamil ? '${context.trVillage(village, ref)} கிராமம்' : '$village Village',
                 district: _selectedDistrict,
                 taluk: _selectedTaluk,
                 village: village,
@@ -752,7 +649,7 @@ class _DirectoryScreenState extends ConsumerState<DirectoryScreen> {
               filteredLeaders.add(DirectoryLeader(
                 name: _generateDeterministicName(_selectedVillage, 7, true, isTamil),
                 position: 'Helping Person (Active)',
-                region: isTamil ? '$_selectedVillage கிராமம்' : '$_selectedVillage Village',
+                region: isTamil ? '${context.trVillage(_selectedVillage, ref)} கிராமம்' : '$_selectedVillage Village',
                 district: _selectedDistrict,
                 taluk: _selectedTaluk,
                 village: _selectedVillage,
@@ -763,7 +660,7 @@ class _DirectoryScreenState extends ConsumerState<DirectoryScreen> {
             filteredLeaders.add(DirectoryLeader(
               name: _generateDeterministicName(_selectedVillage, 6, false, isTamil),
               position: 'Area Coordinator',
-              region: isTamil ? '$_selectedVillage கிராமம்' : '$_selectedVillage Village',
+              region: isTamil ? '${context.trVillage(_selectedVillage, ref)} கிராமம்' : '$_selectedVillage Village',
               district: _selectedDistrict,
               taluk: _selectedTaluk,
               village: _selectedVillage,
@@ -771,7 +668,7 @@ class _DirectoryScreenState extends ConsumerState<DirectoryScreen> {
             filteredLeaders.add(DirectoryLeader(
               name: _generateDeterministicName(_selectedVillage, 7, true, isTamil),
               position: 'Helping Person (Active)',
-              region: isTamil ? '$_selectedVillage கிராமம்' : '$_selectedVillage Village',
+              region: isTamil ? '${context.trVillage(_selectedVillage, ref)} கிராமம்' : '$_selectedVillage Village',
               district: _selectedDistrict,
               taluk: _selectedTaluk,
               village: _selectedVillage,
@@ -821,6 +718,7 @@ class _DirectoryScreenState extends ConsumerState<DirectoryScreen> {
                       // District Dropdown
                       Expanded(
                         child: DropdownButtonFormField<String>(
+                          isExpanded: true,
                           decoration: InputDecoration(
                             labelText: context.tr('districtLabel', ref),
                             contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
@@ -831,7 +729,7 @@ class _DirectoryScreenState extends ConsumerState<DirectoryScreen> {
                             DropdownMenuItem(value: 'All', child: Text(context.tr('allDistricts', ref))),
                             ..._districts.map((d) {
                               final name = d['name'] as String;
-                              final displayName = isTamil ? (_districtTamilNames[name] ?? name) : name;
+                              final displayName = context.trDistrict(name, ref);
                               return DropdownMenuItem(
                                 value: name,
                                 child: Text(displayName),
@@ -846,6 +744,7 @@ class _DirectoryScreenState extends ConsumerState<DirectoryScreen> {
                       // Taluk Dropdown
                       Expanded(
                         child: DropdownButtonFormField<String>(
+                          isExpanded: true,
                           decoration: InputDecoration(
                             labelText: context.tr('talukLabel', ref),
                             contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
@@ -856,7 +755,7 @@ class _DirectoryScreenState extends ConsumerState<DirectoryScreen> {
                             DropdownMenuItem(value: 'All', child: Text(context.tr('allTaluks', ref))),
                             ..._filteredTaluks.map((t) => DropdownMenuItem(
                                   value: t,
-                                  child: Text(t),
+                                  child: Text(context.trTaluk(t, ref)),
                                 )),
                           ],
                           onChanged: (val) {
@@ -907,8 +806,9 @@ class _DirectoryScreenState extends ConsumerState<DirectoryScreen> {
                       itemCount: filteredLeaders.length,
                       itemBuilder: (context, index) {
                         final leader = filteredLeaders[index];
-                        final displayPosition = isTamil ? (_positionTamilNames[leader.position] ?? leader.position) : leader.position;
-                        final displayRegion = isTamil ? (_regionTamilNames[leader.region] ?? leader.region) : leader.region;
+                        final displayName = context.trName(leader.name, ref);
+                        final displayPosition = context.trPosition(leader.position, ref);
+                        final displayRegion = context.trRegion(leader.region, ref);
 
                         return Card(
                           margin: const EdgeInsets.only(bottom: 12),
@@ -917,12 +817,12 @@ class _DirectoryScreenState extends ConsumerState<DirectoryScreen> {
                             leading: CircleAvatar(
                               backgroundColor: AppTheme.primary,
                               child: Text(
-                                leader.name.isNotEmpty ? leader.name[0] : 'L',
+                                displayName.isNotEmpty ? displayName[0] : 'L',
                                 style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
                               ),
                             ),
                             title: Text(
-                              leader.name,
+                              displayName,
                               style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
                             ),
                             subtitle: Column(
@@ -978,56 +878,7 @@ class _DirectoryScreenState extends ConsumerState<DirectoryScreen> {
 
 
 
-  final Map<String, String> _constituencyTamilNames = const {
-    'Kolathur': 'கொளத்தூர்',
-    'Chepauk-Thiruvallikeni': 'சேப்பாக்கம்-திருவல்லிக்கேணி',
-    'Harbour': 'துறைமுகம்',
-    'Perambur': 'பெரம்பூர்',
-    'Madurantakam': 'மதுராந்தகம்',
-    'Ranipet': 'ராணிப்பேட்டை',
-    'Katpadi': 'காட்பாடி',
-    'Tiruvannamalai': 'திருவண்ணாமலை',
-    'Kallakurichi': 'கள்ளக்குறிச்சி',
-    'Salem (North)': 'சேலம் (வடக்கு)',
-    'Erode (West)': 'ஈரோடு (மேற்கு)',
-    'Coimbatore (North)': 'கோயம்புத்தூர் (வடக்கு)',
-    'Coimbatore (South)': 'கோயம்புத்தூர் (தெற்கு)',
-    'Athoor': 'ஆத்தூர்',
-    'Tiruchirappalli West': 'திருச்சிராப்பள்ளி மேற்கு',
-    'Tiruchirappalli (East)': 'திருச்சிராப்பள்ளி (கிழக்கு)',
-    'Thanjavur': 'தஞ்சாவூர்',
-    'Madurai Central': 'மதுரை மத்திய',
-    'Madurai West': 'மதுரை மேற்கு',
-    'Virudhunagar': 'விருதுநகர்',
-    'Aruppukkottai': 'அருப்புக்கோட்டை',
-    'Tiruchendur': 'திருச்செந்தூர்',
-    'Radhapuram': 'ராதாபுரம்',
-  };
 
-  final Map<String, String> _mlaTamilNames = const {
-    'M.K. Stalin': 'மு.க. ஸ்டாலின்',
-    'Udhayanidhi Stalin': 'உதயநிதி ஸ்டாலின்',
-    'P.K. Sekarbabu': 'பி.கே. சேகர்பாபு',
-    'C. Joseph Vijay': 'சி. ஜோசப் விஜய்',
-    'Maragatham Kumaravel': 'மரகதம் குமாரவேல்',
-    'Thahira': 'தாஹிரா',
-    'Dr. M. Sudhakar': 'டாக்டர் எம். சுதாகர்',
-    'E.V. Velu': 'எ.வ. வேலு',
-    'Arul Vignesh C.': 'அருள் விக்னேஷ் சி.',
-    'Sivakumar K.': 'சிவகுமார் கே.',
-    'Ananth Moghan K.K.': 'அனந்த் மோகன் கே.கே.',
-    'V. Sampathkumar': 'வி. சம்பத்குமார்',
-    'V. Senthilbalaji': 'வி. செந்தில்பாலாஜி',
-    'I. Periasamy': 'இ. பெரியசாமி',
-    'K.N. Nehru': 'கே.என். நேரு',
-    'R. Vijayasaravan': 'ஆர். விஜயசரவணன்',
-    'Madhar Badhurudeen': 'மாதர் பதுருதீன்',
-    'Thangapandi S.R.': 'தங்கப்பாண்டி எஸ்.ஆர்.',
-    'Selvam P.': 'செல்வம் பி.',
-    'K.K.S.S.R. Ramachandran': 'கே.கே.எஸ்.எஸ்.ஆர். ராமச்சந்திரன்',
-    'Anitha R. Radhakrishnan': 'அனிதா ஆர். ராதாகிருஷ்ணன்',
-    'Dr. Sathish Christopher': 'டாக்டர் சதீஷ் கிறிஸ்டோபர்',
-  };
 
   Widget _buildStatewideSummary(bool isDark, bool isTamil) {
     final title = isTamil ? 'தமிழ்நாடு நிர்வாகச் சுருக்கம்' : 'Tamil Nadu Administrative Summary';
@@ -1077,11 +928,13 @@ class _DirectoryScreenState extends ConsumerState<DirectoryScreen> {
               children: [
                 const Icon(Icons.bar_chart_outlined, color: AppTheme.primary, size: 24),
                 const SizedBox(width: 8),
-                Text(
-                  title,
-                  style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
+                Expanded(
+                  child: Text(
+                    title,
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
               ],
@@ -1169,7 +1022,7 @@ class _DirectoryScreenState extends ConsumerState<DirectoryScreen> {
     final List<dynamic> matchingMLAs = districtData != null
         ? districtData['constituencies'] ?? []
         : [];
-    final displayDistrictName = isTamil ? (_districtTamilNames[districtName] ?? districtName) : districtName;
+    final displayDistrictName = context.trDistrict(districtName, ref);
 
     final taluksTitle = isTamil ? '$displayDistrictName மாவட்டத்தின் வட்டங்கள் (தாலுகாக்கள்)' : 'Taluks in $displayDistrictName District';
     final mlasTitle = isTamil ? 'சட்டமன்றத் தொகுதிகள் & உறுப்பினர்கள் (MLA)' : 'Assembly Constituencies & Elected MLAs';
@@ -1186,15 +1039,17 @@ class _DirectoryScreenState extends ConsumerState<DirectoryScreen> {
               children: [
                 const Icon(Icons.location_city_outlined, color: AppTheme.primary, size: 24),
                 const SizedBox(width: 8),
-                Text(
-                  displayDistrictName,
-                  style: const TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
+                Expanded(
+                  child: Text(
+                    displayDistrictName,
+                    style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
-                const Spacer(),
-                if (_selectedTaluk != 'All')
+                if (_selectedTaluk != 'All') ...[
+                  const SizedBox(width: 8),
                   TextButton.icon(
                     onPressed: () {
                       _onTalukChanged('All');
@@ -1205,6 +1060,7 @@ class _DirectoryScreenState extends ConsumerState<DirectoryScreen> {
                       style: const TextStyle(fontSize: 12, color: AppTheme.primary),
                     ),
                   ),
+                ],
               ],
             ),
             const Divider(height: 24),
@@ -1217,9 +1073,11 @@ class _DirectoryScreenState extends ConsumerState<DirectoryScreen> {
                   children: [
                     const Icon(Icons.grid_3x3_outlined, color: AppTheme.accent, size: 20),
                     const SizedBox(width: 8),
-                    Text(
-                      taluksTitle,
-                      style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+                    Expanded(
+                      child: Text(
+                        taluksTitle,
+                        style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+                      ),
                     ),
                   ],
                 ),
@@ -1237,7 +1095,7 @@ class _DirectoryScreenState extends ConsumerState<DirectoryScreen> {
                       final isSelected = _selectedTaluk == taluk;
                       return ChoiceChip(
                         label: Text(
-                          taluk,
+                          context.trTaluk(taluk, ref),
                           style: TextStyle(
                             fontSize: 12,
                             fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
@@ -1269,12 +1127,14 @@ class _DirectoryScreenState extends ConsumerState<DirectoryScreen> {
                     children: [
                       const Icon(Icons.holiday_village_outlined, color: AppTheme.accent, size: 20),
                       const SizedBox(width: 8),
-                      Text(
-                        isTamil ? 'கிராமங்கள் / பகுதிகள்' : 'Sub-urban Villages / Areas',
-                        style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+                      Expanded(
+                        child: Text(
+                          isTamil ? 'கிராமங்கள் / பகுதிகள்' : 'Sub-urban Villages / Areas',
+                          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+                        ),
                       ),
-                      const Spacer(),
-                      if (_selectedVillage != 'All')
+                      if (_selectedVillage != 'All') ...[
+                        const SizedBox(width: 8),
                         TextButton.icon(
                           onPressed: () {
                             setState(() {
@@ -1287,6 +1147,7 @@ class _DirectoryScreenState extends ConsumerState<DirectoryScreen> {
                             style: const TextStyle(fontSize: 12, color: AppTheme.primary),
                           ),
                         ),
+                      ],
                     ],
                   ),
                   const SizedBox(height: 12),
@@ -1316,7 +1177,7 @@ class _DirectoryScreenState extends ConsumerState<DirectoryScreen> {
                       ),
                       ..._filteredVillages.map((village) {
                         final isSelected = _selectedVillage == village;
-                        final displayVillage = isTamil ? (_villageTamilNames[village] ?? village) : village;
+                        final displayVillage = context.trVillage(village, ref);
                         return ChoiceChip(
                           label: Text(
                             displayVillage,
@@ -1355,9 +1216,11 @@ class _DirectoryScreenState extends ConsumerState<DirectoryScreen> {
                   children: [
                     const Icon(Icons.how_to_reg_outlined, color: AppTheme.primary, size: 20),
                     const SizedBox(width: 8),
-                    Text(
-                      mlasTitle,
-                      style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+                    Expanded(
+                      child: Text(
+                        mlasTitle,
+                        style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+                      ),
                     ),
                   ],
                 ),
@@ -1393,12 +1256,8 @@ class _DirectoryScreenState extends ConsumerState<DirectoryScreen> {
                       final item = matchingMLAs[index];
                       final String constituencyName = item['name']?.toString() ?? '';
                       final String memberName = item['member']?.toString() ?? '';
-                      final displayConstituency = isTamil
-                          ? (_constituencyTamilNames[constituencyName] ?? constituencyName)
-                          : constituencyName;
-                      final displayMLA = isTamil
-                          ? (_mlaTamilNames[memberName] ?? memberName)
-                          : memberName;
+                      final displayConstituency = context.trConstituency(constituencyName, ref);
+                      final displayMLA = context.trName(memberName, ref);
 
                       return Container(
                         margin: const EdgeInsets.only(bottom: 8),
@@ -1448,26 +1307,30 @@ class _DirectoryScreenState extends ConsumerState<DirectoryScreen> {
                               ),
                             ),
                             const SizedBox(width: 16),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.end,
-                              children: [
-                                Text(
-                                  displayMLA,
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 14,
-                                    color: isDark ? AppTheme.accent : AppTheme.primary,
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                children: [
+                                  Text(
+                                    displayMLA,
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 14,
+                                      color: isDark ? AppTheme.accent : AppTheme.primary,
+                                    ),
+                                    textAlign: TextAlign.end,
                                   ),
-                                ),
-                                const SizedBox(height: 2),
-                                Text(
-                                  isTamil ? 'சட்டமன்ற உறுப்பினர் (MLA)' : 'Elected MLA',
-                                  style: TextStyle(
-                                    color: Colors.grey[500],
-                                    fontSize: 11,
+                                  const SizedBox(height: 2),
+                                  Text(
+                                    isTamil ? 'சட்டமன்ற உறுப்பினர் (MLA)' : 'Elected MLA',
+                                    style: TextStyle(
+                                      color: Colors.grey[500],
+                                      fontSize: 11,
+                                    ),
+                                    textAlign: TextAlign.end,
                                   ),
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
                           ],
                         ),
@@ -1484,19 +1347,7 @@ class _DirectoryScreenState extends ConsumerState<DirectoryScreen> {
 
 
 
-  final Map<String, String> _villageTamilNames = const {
-    'Virudhunagar Main': 'விருதுநகர் மெயின்',
-    'Soolakkarai': 'சூலக்கரை',
-    'Allampatti': 'அல்லம்பட்டி',
-    'Pandian Nagar': 'பாண்டியன் நகர்',
-    'Ramalingapuram': 'ராமலிங்கபுரம்',
-    'Sattur Town': 'சாத்தூர் நகரம்',
-    'Padanthal': 'பதந்தால்',
-    'Venkatachalapuram': 'வெங்கடாசலபுரம்',
-    'Ward 119 (Egmore)': 'வார்டு 119 (எழும்பூர்)',
-    'Egmore Station Area': 'எழும்பூர் நிலைய பகுதி',
-    'Spurtank Road': 'ஸ்பர்டேங்க் சாலை',
-  };
+
 
   String _generateDeterministicName(String key, int seed, bool isFemale, bool isTamil) {
     final List<Map<String, String>> initials = [

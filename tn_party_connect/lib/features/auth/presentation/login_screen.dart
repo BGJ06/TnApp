@@ -325,7 +325,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> with SingleTickerProv
           if (state is AuthError) ...[
             const SizedBox(height: 12),
             Text(
-              state.message,
+              context.trError(state.message, ref),
               style: const TextStyle(color: AppTheme.emergency, fontSize: 12),
               textAlign: TextAlign.center,
             ),
@@ -382,7 +382,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> with SingleTickerProv
             if (state is AuthError) ...[
               const SizedBox(height: 12),
               Text(
-                state.message,
+                context.trError(state.message, ref),
                 style: const TextStyle(color: AppTheme.emergency, fontSize: 12),
                 textAlign: TextAlign.center,
               ),

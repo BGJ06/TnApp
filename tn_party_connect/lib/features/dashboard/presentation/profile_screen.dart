@@ -81,47 +81,7 @@ class ProfileScreen extends ConsumerWidget {
     final user = (authState as AuthAuthenticated).user;
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
-    // Translation helper maps
-    final districtTamilNames = {
-      'Ariyalur': 'அரியலூர்',
-      'Chengalpattu': 'செங்கல்பட்டு',
-      'Chennai': 'சென்னை',
-      'Coimbatore': 'கோயம்புத்தூர்',
-      'Cuddalore': 'கடலூர்',
-      'Dharmapuri': 'தர்மபுரி',
-      'Dindigul': 'திண்டுக்கல்',
-      'Erode': 'ஈரோடு',
-      'Kallakurichi': 'கள்ளக்குறிச்சி',
-      'Kanchipuram': 'காஞ்சிபுரம்',
-      'Kanyakumari': 'கன்னியாகுமரி',
-      'Karur': 'கரூர்',
-      'Krishnagiri': 'கிருஷ்ணகிரி',
-      'Madurai': 'மதுரை',
-      'Mayiladuthurai': 'மயிலாடுதுறை',
-      'Nagapattinam': 'நாகப்பட்டினம்',
-      'Namakkal': 'நாமக்கல்',
-      'Nilgiris': 'நீலகிரி',
-      'Perambalur': 'பெரம்பலூர்',
-      'Pudukkottai': 'புதுக்கோட்டை',
-      'Ramanathapuram': 'இராமநாதபுரம்',
-      'Ranipet': 'ராணிப்பேட்டை',
-      'Salem': 'சேலம்',
-      'Sivaganga': 'சிவகங்கை',
-      'Tenkasi': 'தென்காசி',
-      'Thanjavur': 'தஞ்சாவூர்',
-      'Theni': 'தேனி',
-      'Thoothukudi': 'தூத்துக்குடி',
-      'Tiruchirappalli': 'திருச்சிராப்பள்ளி',
-      'Tirunelveli': 'திருநெல்வேலி',
-      'Tirupathur': 'திருப்பத்தூர்',
-      'Tiruppur': 'திருப்பூர்',
-      'Tiruvallur': 'திருவள்ளூர்',
-      'Tiruvannamalai': 'திருவண்ணாமலை',
-      'Tiruvarur': 'திருவாரூர்',
-      'Vellore': 'வேலூர்',
-      'Viluppuram': 'விழுப்புரம்',
-      'Virudhunagar': 'விருதுநகர்',
-    };
+
 
     final roleTranslations = {
       'guest': isTamil ? 'விருந்தினர்' : 'GUEST',
@@ -134,7 +94,7 @@ class ProfileScreen extends ConsumerWidget {
     };
 
     final district = user.assignedRegion['district'] ?? 'Tamil Nadu';
-    final localizedDistrict = isTamil ? (districtTamilNames[district] ?? 'தமிழ்நாடு') : district;
+    final localizedDistrict = isTamil ? (district == 'Tamil Nadu' ? 'தமிழ்நாடு' : context.trDistrict(district, ref)) : district;
     final roleText = roleTranslations[user.role] ?? user.role.replaceAll('_', ' ').toUpperCase();
 
     // Generated static details for demonstration
@@ -231,7 +191,7 @@ class ProfileScreen extends ConsumerWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              user.fullName,
+                              context.trName(user.fullName, ref),
                               style: const TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
                             ),
                             Text(
@@ -276,7 +236,7 @@ class ProfileScreen extends ConsumerWidget {
               context,
               title: context.tr('personalContactInfo', ref),
               items: [
-                _buildInfoRow(context.tr('fullName', ref), user.fullName),
+                _buildInfoRow(context.tr('fullName', ref), context.trName(user.fullName, ref)),
                 _buildInfoRow(context.tr('dob', ref), mockDob),
                 _buildInfoRow(context.tr('primaryMobile', ref), user.mobileNumber ?? '+919999999999'),
                 _buildInfoRow(context.tr('emailAddress', ref), mockEmail),
@@ -340,15 +300,19 @@ class ProfileScreen extends ConsumerWidget {
   Widget _buildInfoRow(String label, String value, {Color? valueColor}) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 6.0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(label, style: const TextStyle(color: Colors.grey, fontSize: 13)),
+          Text(
+            label,
+            style: const TextStyle(color: Colors.grey, fontSize: 11),
+          ),
+          const SizedBox(height: 2),
           Text(
             value,
             style: TextStyle(
               fontWeight: FontWeight.w600,
-              fontSize: 13,
+              fontSize: 14,
               color: valueColor,
             ),
           ),

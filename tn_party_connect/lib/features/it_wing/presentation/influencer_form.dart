@@ -35,19 +35,6 @@ class _InfluencerFormState extends ConsumerState<InfluencerForm> {
   // Skills capability mapping
   final List<String> _selectedSkills = [];
 
-  final Map<String, String> _skillTamilNames = {
-    'Graphic Design': 'கிராஃபிக் வடிவமைப்பு',
-    'Video Editing': 'வீடியோ எடிட்டிங்',
-    'Photography': 'புகைப்படம் எடுத்தல்',
-    'Videography': 'வீடியோகிராபி',
-    'Public Speaking': 'பேச்சாற்றல்',
-    'Content Writing': 'எழுத்தாற்றல்',
-    'Social Media Management': 'சமூக ஊடக மேலாண்மை',
-    'Web Development': 'இணையதள மேம்பாடு',
-    'App Development': 'செயலி மேம்பாடு',
-    'Campaign Management': 'பிரச்சார மேலாண்மை',
-  };
-
   @override
   void dispose() {
     _nameController.dispose();
@@ -175,46 +162,46 @@ class _InfluencerFormState extends ConsumerState<InfluencerForm> {
               const SizedBox(height: 12),
               TextFormField(
                 controller: _instagramController,
-                decoration: const InputDecoration(
-                  labelText: 'Instagram Username (e.g. @username)',
-                  prefixIcon: Icon(Icons.camera_alt),
-                  border: OutlineInputBorder(),
+                decoration: InputDecoration(
+                  labelText: context.tr('instagramLabel', ref),
+                  prefixIcon: const Icon(Icons.camera_alt),
+                  border: const OutlineInputBorder(),
                 ),
               ),
               const SizedBox(height: 12),
               TextFormField(
                 controller: _facebookController,
-                decoration: const InputDecoration(
-                  labelText: 'Facebook Page URL',
-                  prefixIcon: Icon(Icons.facebook),
-                  border: OutlineInputBorder(),
+                decoration: InputDecoration(
+                  labelText: context.tr('facebookLabel', ref),
+                  prefixIcon: const Icon(Icons.facebook),
+                  border: const OutlineInputBorder(),
                 ),
               ),
               const SizedBox(height: 12),
               TextFormField(
                 controller: _xController,
-                decoration: const InputDecoration(
-                  labelText: 'X (Twitter) Username',
-                  prefixIcon: Icon(Icons.alternate_email),
-                  border: OutlineInputBorder(),
+                decoration: InputDecoration(
+                  labelText: context.tr('xLabel', ref),
+                  prefixIcon: const Icon(Icons.alternate_email),
+                  border: const OutlineInputBorder(),
                 ),
               ),
               const SizedBox(height: 12),
               TextFormField(
                 controller: _youtubeController,
-                decoration: const InputDecoration(
-                  labelText: 'YouTube Channel Name',
-                  prefixIcon: Icon(Icons.video_library),
-                  border: OutlineInputBorder(),
+                decoration: InputDecoration(
+                  labelText: context.tr('youtubeLabel', ref),
+                  prefixIcon: const Icon(Icons.video_library),
+                  border: const OutlineInputBorder(),
                 ),
               ),
               const SizedBox(height: 12),
               TextFormField(
                 controller: _telegramController,
-                decoration: const InputDecoration(
-                  labelText: 'Telegram Channel Username',
-                  prefixIcon: Icon(Icons.send),
-                  border: OutlineInputBorder(),
+                decoration: InputDecoration(
+                  labelText: context.tr('telegramLabel', ref),
+                  prefixIcon: const Icon(Icons.send),
+                  border: const OutlineInputBorder(),
                 ),
               ),
               const SizedBox(height: 16),
@@ -257,7 +244,7 @@ class _InfluencerFormState extends ConsumerState<InfluencerForm> {
                 runSpacing: 8,
                 children: AppConstants.influencerSkills.map((skill) {
                   final isSelected = _selectedSkills.contains(skill);
-                  final displaySkill = isTamil ? (_skillTamilNames[skill] ?? skill) : skill;
+                  final displaySkill = isTamil ? context.trSkill(skill, ref) : skill;
                   return FilterChip(
                     label: Text(displaySkill),
                     selected: isSelected,

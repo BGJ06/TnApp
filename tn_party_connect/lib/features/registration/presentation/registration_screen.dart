@@ -108,46 +108,7 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final isTamil = ref.watch(languageProvider) == AppLanguage.tamil;
 
-    final districtTamilNames = {
-      'Ariyalur': 'அரியலூர்',
-      'Chengalpattu': 'செங்கல்பட்டு',
-      'Chennai': 'சென்னை',
-      'Coimbatore': 'கோயம்புத்தூர்',
-      'Cuddalore': 'கடலூர்',
-      'Dharmapuri': 'தர்மபுரி',
-      'Dindigul': 'திண்டுக்கல்',
-      'Erode': 'ஈரோடு',
-      'Kallakurichi': 'கள்ளக்குறிச்சி',
-      'Kanchipuram': 'காஞ்சிபுரம்',
-      'Kanyakumari': 'கன்னியாகுமரி',
-      'Karur': 'கரூர்',
-      'Krishnagiri': 'கிருஷ்ணகிரி',
-      'Madurai': 'மதுரை',
-      'Mayiladuthurai': 'மயிலாடுதுறை',
-      'Nagapattinam': 'நாகப்பட்டினம்',
-      'Namakkal': 'நாமக்கல்',
-      'Nilgiris': 'நீலகிரி',
-      'Perambalur': 'பெரம்பலூர்',
-      'Pudukkottai': 'புதுக்கோட்டை',
-      'Ramanathapuram': 'இராமநாதபுரம்',
-      'Ranipet': 'ராணிப்பேட்டை',
-      'Salem': 'சேலம்',
-      'Sivaganga': 'சிவகங்கை',
-      'Tenkasi': 'தென்காசி',
-      'Thanjavur': 'தஞ்சாவூர்',
-      'Theni': 'தேனி',
-      'Thoothukudi': 'தூத்துக்குடி',
-      'Tiruchirappalli': 'திருச்சிராப்பள்ளி',
-      'Tirunelveli': 'திருநெல்வேலி',
-      'Tirupathur': 'திருப்பத்தூர்',
-      'Tiruppur': 'திருப்பூர்',
-      'Tiruvallur': 'திருவள்ளூர்',
-      'Tiruvannamalai': 'திருவண்ணாமலை',
-      'Tiruvarur': 'திருவாரூர்',
-      'Vellore': 'வேலூர்',
-      'Viluppuram': 'விழுப்புரம்',
-      'Virudhunagar': 'விருதுநாயக்கர்',
-    };
+
 
     return Scaffold(
       appBar: AppBar(
@@ -303,7 +264,7 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
                       initialValue: _selectedDistrict.isEmpty ? null : _selectedDistrict,
                       items: _districts.map((district) {
                         final name = district['name'] as String;
-                        final displayName = isTamil ? (districtTamilNames[name] ?? name) : name;
+                        final displayName = isTamil ? context.trDistrict(name, ref) : name;
                         return DropdownMenuItem<String>(
                           value: name,
                           child: Text(displayName),
@@ -325,7 +286,7 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
                       items: _filteredTaluks.map((taluk) {
                         return DropdownMenuItem<String>(
                           value: taluk,
-                          child: Text(taluk),
+                          child: Text(isTamil ? context.trTaluk(taluk, ref) : taluk),
                         );
                       }).toList(),
                       onChanged: (val) {
@@ -360,7 +321,7 @@ class _RegistrationScreenState extends ConsumerState<RegistrationScreen> {
                             items: _filteredVillages.map((village) {
                               return DropdownMenuItem<String>(
                                 value: village,
-                                child: Text(village),
+                                child: Text(isTamil ? context.trVillage(village, ref) : village),
                               );
                             }).toList(),
                             onChanged: (val) {

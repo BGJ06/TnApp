@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'district_dashboard.dart'; // Import pendingApprovalsProvider & model
 import '../../../core/theme.dart';
+import '../../../core/localization.dart';
 
 class MemberManagementScreen extends ConsumerStatefulWidget {
   const MemberManagementScreen({super.key});
@@ -20,6 +21,7 @@ class _MemberManagementScreenState
   Widget build(BuildContext context) {
     final pendingMembers = ref.watch(pendingApprovalsProvider);
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final isTamil = ref.watch(languageProvider) == AppLanguage.tamil;
 
     // Filter members dynamically
     final filteredMembers = pendingMembers.where((m) {
@@ -31,7 +33,7 @@ class _MemberManagementScreenState
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Member Management CRM'),
+        title: Text(context.tr('memberManagementCrm', ref)),
       ),
       body: Column(
         children: [
@@ -50,10 +52,10 @@ class _MemberManagementScreenState
               children: [
                 // Search Input
                 TextFormField(
-                  decoration: const InputDecoration(
-                    prefixIcon: Icon(Icons.search),
-                    labelText: 'Search Members by Name',
-                    border: OutlineInputBorder(),
+                  decoration: InputDecoration(
+                    prefixIcon: const Icon(Icons.search),
+                    labelText: context.tr('searchMembersByName', ref),
+                    border: const OutlineInputBorder(),
                   ),
                   onChanged: (val) {
                     setState(() {
@@ -62,21 +64,22 @@ class _MemberManagementScreenState
                   },
                 ),
                 const SizedBox(height: 12),
-
+ 
                 // Dropdown Filter
                 DropdownButtonFormField<String>(
-                  decoration: const InputDecoration(
-                    labelText: 'Filter by Taluk',
-                    border: OutlineInputBorder(),
+                  isExpanded: true,
+                  decoration: InputDecoration(
+                    labelText: context.tr('filterByTaluk', ref),
+                    border: const OutlineInputBorder(),
                     contentPadding:
-                        EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                        const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                   ),
                   initialValue: _selectedTaluk,
-                  items: const [
-                    DropdownMenuItem(value: 'All', child: Text('All Taluks')),
-                    DropdownMenuItem(value: 'Egmore', child: Text('Egmore')),
+                  items: [
+                    DropdownMenuItem(value: 'All', child: Text(isTamil ? 'அனைத்து தாலுகாக்கள்' : 'All Taluks')),
+                    DropdownMenuItem(value: 'Egmore', child: Text(isTamil ? 'எழும்பூர்' : 'Egmore')),
                     DropdownMenuItem(
-                        value: 'Mylapore', child: Text('Mylapore')),
+                        value: 'Mylapore', child: Text(isTamil ? 'மயிலாப்பூர்' : 'Mylapore')),
                   ],
                   onChanged: (val) {
                     setState(() {
@@ -92,18 +95,18 @@ class _MemberManagementScreenState
           Container(
             color: AppTheme.primary.withValues(alpha: 0.05),
             padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-            child: const Row(
+            child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(Icons.swipe_left_alt, size: 16, color: Colors.grey),
-                SizedBox(width: 4),
-                Text('Swipe Left to Reject',
-                    style: TextStyle(color: Colors.grey, fontSize: 11)),
-                SizedBox(width: 16),
-                Icon(Icons.swipe_right_alt, size: 16, color: Colors.grey),
-                SizedBox(width: 4),
-                Text('Swipe Right to Approve',
-                    style: TextStyle(color: Colors.grey, fontSize: 11)),
+                const Icon(Icons.swipe_left_alt, size: 16, color: Colors.grey),
+                const SizedBox(width: 4),
+                Text(context.tr('swipeLeftToReject', ref),
+                    style: const TextStyle(color: Colors.grey, fontSize: 11)),
+                const SizedBox(width: 16),
+                const Icon(Icons.swipe_right_alt, size: 16, color: Colors.grey),
+                const SizedBox(width: 4),
+                Text(context.tr('swipeRightToApprove', ref),
+                    style: const TextStyle(color: Colors.grey, fontSize: 11)),
               ],
             ),
           ),
@@ -111,9 +114,9 @@ class _MemberManagementScreenState
           // Members List
           Expanded(
             child: filteredMembers.isEmpty
-                ? const Center(
-                    child: Text('No matching pending member records.',
-                        style: TextStyle(color: Colors.grey)))
+                ? Center(
+                    child: Text(context.tr('noPendingRecords', ref),
+                        style: const TextStyle(color: Colors.grey)))
                 : ListView.builder(
                     padding: const EdgeInsets.all(16),
                     itemCount: filteredMembers.length,
@@ -137,6 +140,7 @@ class _MemberManagementScreenState
                               color: Colors.white, size: 30),
                         ),
                         onDismissed: (direction) {
+                          final displayName = isTamil ? context.trName(member.fullName, ref) : member.fullName;
                           if (direction == DismissDirection.startToEnd) {
                             ref
                                 .read(pendingApprovalsProvider.notifier)
@@ -144,7 +148,7 @@ class _MemberManagementScreenState
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(
                                   content:
-                                      Text('${member.fullName} Approved!')),
+                                      Text(isTamil ? '$displayName அங்கீகரிக்கப்பட்டது!' : '$displayName Approved!')),
                             );
                           } else {
                             ref
@@ -152,7 +156,7 @@ class _MemberManagementScreenState
                                 .reject(member.uid);
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(
-                                  content: Text('${member.fullName} Rejected')),
+                                  content: Text(isTamil ? '$displayName நிராகரிக்கப்பட்டது' : '$displayName Rejected')),
                             );
                           }
                         },
@@ -160,7 +164,7 @@ class _MemberManagementScreenState
                           margin: const EdgeInsets.only(bottom: 12),
                           child: ListTile(
                             contentPadding: const EdgeInsets.all(16),
-                            title: Text(member.fullName,
+                            title: Text(isTamil ? context.trName(member.fullName, ref) : member.fullName,
                                 style: const TextStyle(
                                     fontWeight: FontWeight.bold)),
                             subtitle: Column(
@@ -168,8 +172,8 @@ class _MemberManagementScreenState
                               children: [
                                 const SizedBox(height: 4),
                                 Text(
-                                    'Taluk: ${member.taluk} | Ward: ${member.ward}'),
-                                Text('Mobile: ${member.mobileNumber}',
+                                    isTamil ? 'வட்டம்: ${context.trTaluk(member.taluk, ref)} | வார்டு: ${member.ward}' : 'Taluk: ${member.taluk} | Ward: ${member.ward}'),
+                                Text('${isTamil ? "கைபேசி" : "Mobile"}: ${member.mobileNumber}',
                                     style: const TextStyle(
                                         color: Colors.grey, fontSize: 12)),
                               ],
@@ -184,9 +188,9 @@ class _MemberManagementScreenState
                                     color: Colors.orange.withValues(alpha: 0.2),
                                     borderRadius: BorderRadius.circular(4),
                                   ),
-                                  child: const Text(
-                                    'PENDING',
-                                    style: TextStyle(
+                                  child: Text(
+                                    context.tr('pendingLabel', ref),
+                                    style: const TextStyle(
                                         color: Colors.orange,
                                         fontSize: 10,
                                         fontWeight: FontWeight.bold),

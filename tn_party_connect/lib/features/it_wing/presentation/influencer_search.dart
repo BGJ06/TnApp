@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/constants.dart';
 import '../../../core/theme.dart';
+import '../../../core/localization.dart';
 
 class InfluencerProfile {
   final String name;
@@ -26,14 +28,14 @@ class InfluencerProfile {
   });
 }
 
-class InfluencerSearch extends StatefulWidget {
+class InfluencerSearch extends ConsumerStatefulWidget {
   const InfluencerSearch({super.key});
 
   @override
-  State<InfluencerSearch> createState() => _InfluencerSearchState();
+  ConsumerState<InfluencerSearch> createState() => _InfluencerSearchState();
 }
 
-class _InfluencerSearchState extends State<InfluencerSearch> {
+class _InfluencerSearchState extends ConsumerState<InfluencerSearch> {
   String _selectedDistrict = 'All';
   String _selectedSkill = 'All';
 
@@ -88,6 +90,7 @@ class _InfluencerSearchState extends State<InfluencerSearch> {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final isTamil = ref.watch(languageProvider) == AppLanguage.tamil;
 
     // Filter profiles based on state variables
     final filteredProfiles = _profiles.where((p) {
@@ -98,11 +101,25 @@ class _InfluencerSearchState extends State<InfluencerSearch> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Influencer Search Grid'),
+        title: Text(context.tr('itWingSearchMatrix', ref)),
+        actions: [
+          // Language Switcher Toggle button
+          TextButton.icon(
+            onPressed: () {
+              ref.read(languageProvider.notifier).toggleLanguage();
+            },
+            icon: const Icon(Icons.language, color: Colors.white, size: 18),
+            label: Text(
+              isTamil ? 'English' : 'தமிழ்',
+              style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+            ),
+          ),
+          const SizedBox(width: 8),
+        ],
       ),
       body: Column(
         children: [
-          // Search & Filter Panel
+          // Search & Filter Panel stacked vertically for mobile display
           Container(
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
@@ -115,54 +132,53 @@ class _InfluencerSearchState extends State<InfluencerSearch> {
                 )
               ],
             ),
-            child: Row(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 // Filter by District
-                Expanded(
-                  child: DropdownButtonFormField<String>(
-                    decoration: const InputDecoration(
-                      labelText: 'Region (District)',
-                      contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                      border: OutlineInputBorder(),
-                    ),
-                    value: _selectedDistrict,
-                    items: const [
-                      DropdownMenuItem(value: 'All', child: Text('All Regions')),
-                      DropdownMenuItem(value: 'Chennai', child: Text('Chennai')),
-                      DropdownMenuItem(value: 'Madurai', child: Text('Madurai')),
-                      DropdownMenuItem(value: 'Coimbatore', child: Text('Coimbatore')),
-                    ],
-                    onChanged: (val) {
-                      setState(() {
-                        _selectedDistrict = val ?? 'All';
-                      });
-                    },
+                DropdownButtonFormField<String>(
+                  isExpanded: true,
+                  decoration: InputDecoration(
+                    labelText: context.tr('districtLabel', ref),
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                    border: const OutlineInputBorder(),
                   ),
+                  value: _selectedDistrict,
+                  items: [
+                    DropdownMenuItem(value: 'All', child: Text(isTamil ? 'அனைத்து மாவட்டங்கள்' : 'All Regions')),
+                    DropdownMenuItem(value: 'Chennai', child: Text(isTamil ? 'சென்னை' : 'Chennai')),
+                    DropdownMenuItem(value: 'Madurai', child: Text(isTamil ? 'மதுரை' : 'Madurai')),
+                    DropdownMenuItem(value: 'Coimbatore', child: Text(isTamil ? 'கோயம்புத்தூர்' : 'Coimbatore')),
+                  ],
+                  onChanged: (val) {
+                    setState(() {
+                      _selectedDistrict = val ?? 'All';
+                    });
+                  },
                 ),
-                const SizedBox(width: 12),
+                const SizedBox(height: 12),
 
                 // Filter by Technical Skill
-                Expanded(
-                  child: DropdownButtonFormField<String>(
-                    decoration: const InputDecoration(
-                      labelText: 'Capability Skill',
-                      contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                      border: OutlineInputBorder(),
-                    ),
-                    value: _selectedSkill,
-                    items: [
-                      const DropdownMenuItem(value: 'All', child: Text('All Skills')),
-                      ...AppConstants.influencerSkills.map((s) => DropdownMenuItem(
-                            value: s,
-                            child: Text(s),
-                          )),
-                    ],
-                    onChanged: (val) {
-                      setState(() {
-                        _selectedSkill = val ?? 'All';
-                      });
-                    },
+                DropdownButtonFormField<String>(
+                  isExpanded: true,
+                  decoration: InputDecoration(
+                    labelText: isTamil ? 'டிஜிட்டல் திறன்' : 'Capability Skill',
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                    border: const OutlineInputBorder(),
                   ),
+                  value: _selectedSkill,
+                  items: [
+                    DropdownMenuItem(value: 'All', child: Text(isTamil ? 'அனைத்து திறன்கள்' : 'All Skills')),
+                    ...AppConstants.influencerSkills.map((s) => DropdownMenuItem(
+                          value: s,
+                          child: Text(isTamil ? context.trSkill(s, ref) : s),
+                        )),
+                  ],
+                  onChanged: (val) {
+                    setState(() {
+                      _selectedSkill = val ?? 'All';
+                    });
+                  },
                 ),
               ],
             ),
@@ -175,11 +191,11 @@ class _InfluencerSearchState extends State<InfluencerSearch> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  'Search Results (${filteredProfiles.length})',
+                  '${isTamil ? "தேடல் முடிவுகள்" : "Search Results"} (${filteredProfiles.length})',
                   style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                 ),
                 Text(
-                  'Reach Sum: ${filteredProfiles.fold(0, (sum, p) => sum + p.reach).toString()}',
+                  '${isTamil ? "மொத்த சென்றடைவு" : "Reach Sum"}: ${filteredProfiles.fold(0, (sum, p) => sum + p.reach).toString()}',
                   style: const TextStyle(color: Colors.grey, fontSize: 12),
                 ),
               ],
@@ -193,6 +209,10 @@ class _InfluencerSearchState extends State<InfluencerSearch> {
               itemCount: filteredProfiles.length,
               itemBuilder: (context, index) {
                 final profile = filteredProfiles[index];
+                final displayProfileName = isTamil ? context.trName(profile.name, ref) : profile.name;
+                final displayDistrict = isTamil ? context.trDistrict(profile.district, ref) : profile.district;
+                final displayTaluk = isTamil ? context.trTaluk(profile.taluk, ref) : profile.taluk;
+
                 return Card(
                   margin: const EdgeInsets.only(bottom: 16),
                   child: Padding(
@@ -204,11 +224,11 @@ class _InfluencerSearchState extends State<InfluencerSearch> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
-                              profile.name,
+                              displayProfileName,
                               style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
                             ),
                             Text(
-                              '${profile.district} (${profile.taluk})',
+                              '$displayDistrict ($displayTaluk)',
                               style: const TextStyle(color: Colors.grey, fontSize: 12),
                             ),
                           ],
@@ -218,9 +238,9 @@ class _InfluencerSearchState extends State<InfluencerSearch> {
                         // Follower analytics chips
                         Row(
                           children: [
-                            _buildInfoChip(Icons.people, '${profile.followers} Followers'),
+                            _buildInfoChip(Icons.people, '${profile.followers} ${isTamil ? "பின்தொடர்பவர்கள்" : "Followers"}'),
                             const SizedBox(width: 8),
-                            _buildInfoChip(Icons.trending_up, '${profile.reach} Est. Reach'),
+                            _buildInfoChip(Icons.trending_up, '${profile.reach} ${isTamil ? "சென்றடைவு" : "Est. Reach"}'),
                           ],
                         ),
                         const SizedBox(height: 12),
@@ -230,6 +250,7 @@ class _InfluencerSearchState extends State<InfluencerSearch> {
                           spacing: 6,
                           runSpacing: 6,
                           children: profile.skills.map((skill) {
+                            final displaySkill = isTamil ? context.trSkill(skill, ref) : skill;
                             return Container(
                               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                               decoration: BoxDecoration(
@@ -237,7 +258,7 @@ class _InfluencerSearchState extends State<InfluencerSearch> {
                                 borderRadius: BorderRadius.circular(4),
                               ),
                               child: Text(
-                                skill,
+                                displaySkill,
                                 style: const TextStyle(color: Colors.teal, fontSize: 11, fontWeight: FontWeight.bold),
                               ),
                             );
@@ -255,7 +276,7 @@ class _InfluencerSearchState extends State<InfluencerSearch> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    'Contact: ${profile.phone}',
+                                    '${isTamil ? "தொடர்புக்கு" : "Contact"}: ${profile.phone}',
                                     style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
                                   ),
                                   Text(

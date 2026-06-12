@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../auth/presentation/auth_state.dart';
 import '../../../core/theme.dart';
 import '../../../core/routes.dart';
+import '../../../core/localization.dart';
 
 // Struct modeling a member awaiting approval
 class PendingApprovalMember {
@@ -83,10 +84,19 @@ class DistrictDashboard extends ConsumerWidget {
     final user = authState.user;
     final districtName = user.assignedRegion['district'] ?? 'Chennai';
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final isTamil = ref.watch(languageProvider) == AppLanguage.tamil;
+
+    final Map<String, String> timestampTranslations = {
+      '2 hours ago': isTamil ? '2 மணிநேரத்திற்கு முன்' : '2 hours ago',
+      '4 hours ago': isTamil ? '4 மணிநேரத்திற்கு முன்' : '4 hours ago',
+      'Yesterday': isTamil ? 'நேற்று' : 'Yesterday',
+    };
+
+    final displayDistrictName = isTamil ? context.trDistrict(districtName, ref) : districtName;
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('$districtName District Hub'),
+        title: Text('$displayDistrictName ${context.tr('districtHubTitle', ref)}'),
         actions: [
           IconButton(
             icon: const Icon(Icons.logout),
@@ -116,12 +126,12 @@ class DistrictDashboard extends ConsumerWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      user.fullName,
+                      context.trName(user.fullName, ref),
                       style: const TextStyle(
                           fontSize: 18, fontWeight: FontWeight.bold),
                     ),
                     Text(
-                      'District Coordinator - $districtName',
+                      '${context.tr('districtCoordinator', ref)} - $displayDistrictName',
                       style: const TextStyle(color: Colors.grey, fontSize: 13),
                     ),
                   ],
@@ -137,12 +147,12 @@ class DistrictDashboard extends ConsumerWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
-                    _buildQuickStat('District Members', '1,420'),
+                    _buildQuickStat(context.tr('districtMembers', ref), '1,420'),
                     const VerticalDivider(width: 20, thickness: 1),
-                    _buildQuickStat('Active Leaders', '54'),
+                    _buildQuickStat(context.tr('activeLeaders', ref), '54'),
                     const VerticalDivider(width: 20, thickness: 1),
                     _buildQuickStat(
-                        'Pending Approvals', '${pendingMembers.length}'),
+                        context.tr('pendingApprovals', ref), '${pendingMembers.length}'),
                   ],
                 ),
               ),
@@ -153,9 +163,9 @@ class DistrictDashboard extends ConsumerWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Text(
-                  'Pending Member Registrations',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                Text(
+                  context.tr('pendingRegistrations', ref),
+                  style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
                 Container(
                   padding:
@@ -165,7 +175,7 @@ class DistrictDashboard extends ConsumerWidget {
                     borderRadius: BorderRadius.circular(10),
                   ),
                   child: Text(
-                    '${pendingMembers.length} Pending',
+                    '${pendingMembers.length} ${context.tr('pendingCount', ref)}',
                     style: const TextStyle(
                         color: Colors.white,
                         fontSize: 11,
@@ -177,12 +187,12 @@ class DistrictDashboard extends ConsumerWidget {
             const SizedBox(height: 12),
 
             if (pendingMembers.isEmpty)
-              const Card(
+              Card(
                 child: Padding(
-                  padding: EdgeInsets.all(24),
+                  padding: const EdgeInsets.all(24),
                   child: Center(
-                    child: Text('All regional applications approved!',
-                        style: TextStyle(color: Colors.grey)),
+                    child: Text(context.tr('allApproved', ref),
+                        style: const TextStyle(color: Colors.grey)),
                   ),
                 ),
               )
@@ -193,6 +203,7 @@ class DistrictDashboard extends ConsumerWidget {
                 itemCount: pendingMembers.length,
                 itemBuilder: (context, index) {
                   final member = pendingMembers[index];
+                  final displayTaluk = isTamil ? context.trTaluk(member.taluk, ref) : member.taluk;
                   return Card(
                     margin: const EdgeInsets.only(bottom: 12),
                     child: Padding(
@@ -204,20 +215,20 @@ class DistrictDashboard extends ConsumerWidget {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
-                                member.fullName,
+                                context.trName(member.fullName, ref),
                                 style: const TextStyle(
                                     fontWeight: FontWeight.bold, fontSize: 16),
                               ),
                               Text(
-                                member.requestTimestamp,
+                                timestampTranslations[member.requestTimestamp] ?? member.requestTimestamp,
                                 style: const TextStyle(
                                     color: Colors.grey, fontSize: 12),
                               ),
                             ],
                           ),
                           const SizedBox(height: 8),
-                          Text('Taluk: ${member.taluk} | Ward: ${member.ward}'),
-                          Text('Phone: ${member.mobileNumber}',
+                          Text('${context.tr('talukLabel', ref)}: $displayTaluk | ${isTamil ? "வார்டு" : "Ward"}: ${member.ward}'),
+                          Text('${isTamil ? "தொலைபேசி" : "Phone"}: ${member.mobileNumber}',
                               style: const TextStyle(color: Colors.grey)),
                           const SizedBox(height: 16),
                           Row(
@@ -229,14 +240,14 @@ class DistrictDashboard extends ConsumerWidget {
                                         .read(pendingApprovalsProvider.notifier)
                                         .reject(member.uid);
                                     ScaffoldMessenger.of(context).showSnackBar(
-                                      const SnackBar(
+                                      SnackBar(
                                           content: Text(
-                                              'Member Registration Rejected')),
+                                              context.tr('memberRejectedMsg', ref))),
                                     );
                                   },
                                   style: OutlinedButton.styleFrom(
                                       foregroundColor: Colors.red),
-                                  child: const Text('Reject'),
+                                  child: Text(context.tr('reject', ref)),
                                 ),
                               ),
                               const SizedBox(width: 12),
@@ -247,12 +258,12 @@ class DistrictDashboard extends ConsumerWidget {
                                         .read(pendingApprovalsProvider.notifier)
                                         .approve(member.uid);
                                     ScaffoldMessenger.of(context).showSnackBar(
-                                      const SnackBar(
+                                      SnackBar(
                                           content: Text(
-                                              'Member Registration Approved!')),
+                                              context.tr('memberApprovedMsg', ref))),
                                     );
                                   },
-                                  child: const Text('Approve'),
+                                  child: Text(context.tr('approve', ref)),
                                 ),
                               ),
                             ],

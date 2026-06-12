@@ -13,6 +13,7 @@ class SplashScreen extends StatefulWidget {
 class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderStateMixin {
   late AnimationController _fadeController;
   late Animation<double> _fadeAnimation;
+  Timer? _navigationTimer;
 
   @override
   void initState() {
@@ -29,7 +30,7 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
     _fadeController.forward();
 
     // Route to Navigation Holder Screen after 2.0 seconds
-    Timer(const Duration(milliseconds: 2000), () {
+    _navigationTimer = Timer(const Duration(milliseconds: 2000), () {
       if (mounted) {
         Navigator.pushReplacementNamed(context, AppRoutes.navigationHolder);
       }
@@ -38,6 +39,7 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
 
   @override
   void dispose() {
+    _navigationTimer?.cancel();
     _fadeController.dispose();
     super.dispose();
   }

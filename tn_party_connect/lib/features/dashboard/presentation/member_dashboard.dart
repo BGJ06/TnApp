@@ -110,52 +110,12 @@ class _MemberDashboardState extends ConsumerState<MemberDashboard> with SingleTi
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final isPending = user.status != 'approved';
 
-    // Translation maps
-    final districtTamilNames = {
-      'Ariyalur': 'அரியலூர்',
-      'Chengalpattu': 'செங்கல்பட்டு',
-      'Chennai': 'சென்னை',
-      'Coimbatore': 'கோயம்புத்தூர்',
-      'Cuddalore': 'கடலூர்',
-      'Dharmapuri': 'தர்மபுரி',
-      'Dindigul': 'திண்டுக்கல்',
-      'Erode': 'ஈரோடு',
-      'Kallakurichi': 'கள்ளக்குறிச்சி',
-      'Kanchipuram': 'காஞ்சிபுரம்',
-      'Kanyakumari': 'கன்னியாகுமரி',
-      'Karur': 'கரூர்',
-      'Krishnagiri': 'கிருஷ்ணகிரி',
-      'Madurai': 'மதுரை',
-      'Mayiladuthurai': 'மயிலாடுதுறை',
-      'Nagapattinam': 'நாகப்பட்டினம்',
-      'Namakkal': 'நாமக்கல்',
-      'Nilgiris': 'நீலகிரி',
-      'Perambalur': 'பெரம்பலூர்',
-      'Pudukkottai': 'புதுக்கோட்டை',
-      'Ramanathapuram': 'இராமநாதபுரம்',
-      'Ranipet': 'ராணிப்பேட்டை',
-      'Salem': 'சேலம்',
-      'Sivaganga': 'சிவகங்கை',
-      'Tenkasi': 'தென்காசி',
-      'Thanjavur': 'தஞ்சாவூர்',
-      'Theni': 'தேனி',
-      'Thoothukudi': 'தூத்துக்குடி',
-      'Tiruchirappalli': 'திருச்சிராப்பள்ளி',
-      'Tirunelveli': 'திருநெல்வேலி',
-      'Tirupathur': 'திருப்பத்தூர்',
-      'Tiruppur': 'திருப்பூர்',
-      'Tiruvallur': 'திருவள்ளூர்',
-      'Tiruvannamalai': 'திருவண்ணாமலை',
-      'Tiruvarur': 'திருவாரூர்',
-      'Vellore': 'வேலூர்',
-      'Viluppuram': 'விழுப்புரம்',
-      'Virudhunagar': 'விருதுநகர்',
-    };
+
 
     final district = user.assignedRegion['district'] ?? 'Tamil Nadu';
-    final localizedDistrict = isTamil ? (districtTamilNames[district] ?? district) : district;
+    final localizedDistrict = isTamil ? (district == 'Tamil Nadu' ? 'தமிழ்நாடு' : context.trDistrict(district, ref)) : district;
     final taluk = user.assignedRegion['taluk'] ?? '';
-    final localizedTaluk = taluk.isNotEmpty ? taluk : '';
+    final localizedTaluk = taluk.isNotEmpty ? (isTamil ? context.trTaluk(taluk, ref) : taluk) : '';
 
     // Filter alerts triggered by this specific member
     final myAlerts = sosAlerts.where((a) => a.memberUid == user.uid).toList();
@@ -210,7 +170,7 @@ class _MemberDashboardState extends ConsumerState<MemberDashboard> with SingleTi
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            '${isTamil ? "வணக்கம்" : "Vanakkam"}, ${user.fullName}',
+                            '${isTamil ? "வணக்கம்" : "Vanakkam"}, ${context.trName(user.fullName, ref)}',
                             style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                           ),
                           const SizedBox(height: 4),
@@ -392,19 +352,7 @@ class _MemberDashboardState extends ConsumerState<MemberDashboard> with SingleTi
               const SizedBox(height: 24),
             ],
 
-            // IT Wing Navigation Shortcut (still available for pending)
-            Card(
-              color: isDark ? AppTheme.surfaceDark : AppTheme.primary.withOpacity(0.08),
-              child: ListTile(
-                leading: const Icon(Icons.campaign, color: Colors.teal),
-                title: Text(context.tr('itWingShortcutTitle', ref), style: const TextStyle(fontWeight: FontWeight.bold)),
-                subtitle: Text(context.tr('itWingShortcutDesc', ref)),
-                trailing: const Icon(Icons.chevron_right),
-                onTap: () {
-                  Navigator.pushNamed(context, AppRoutes.influencerForm);
-                },
-              ),
-            ),
+
           ],
         ),
       ),

@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../auth/presentation/auth_state.dart';
 import '../../auth/data/auth_repository.dart';
 import 'navigation_holder.dart';
+import 'notification_center.dart';
 import '../../../core/theme.dart';
 import '../../../core/routes.dart';
 import '../../../core/localization.dart';
@@ -27,46 +28,7 @@ class HomeDashboard extends ConsumerWidget {
     final isTamil = ref.watch(languageProvider) == AppLanguage.tamil;
 
     // Translation helper maps
-    final districtTamilNames = {
-      'Ariyalur': 'அரியலூர்',
-      'Chengalpattu': 'செங்கல்பட்டு',
-      'Chennai': 'சென்னை',
-      'Coimbatore': 'கோயம்புத்தூர்',
-      'Cuddalore': 'கடலூர்',
-      'Dharmapuri': 'தர்மபுரி',
-      'Dindigul': 'திண்டுக்கல்',
-      'Erode': 'ஈரோடு',
-      'Kallakurichi': 'கள்ளக்குறிச்சி',
-      'Kanchipuram': 'காஞ்சிபுரம்',
-      'Kanyakumari': 'கன்னியாகுமரி',
-      'Karur': 'கரூர்',
-      'Krishnagiri': 'கிருஷ்ணகிரி',
-      'Madurai': 'மதுரை',
-      'Mayiladuthurai': 'மயிலாடுதுறை',
-      'Nagapattinam': 'நாகப்பட்டினம்',
-      'Namakkal': 'நாமக்கல்',
-      'Nilgiris': 'நீலகிரி',
-      'Perambalur': 'பெரம்பலூர்',
-      'Pudukkottai': 'புதுக்கோட்டை',
-      'Ramanathapuram': 'இராமநாதபுரம்',
-      'Ranipet': 'ராணிப்பேட்டை',
-      'Salem': 'சேலம்',
-      'Sivaganga': 'சிவகங்கை',
-      'Tenkasi': 'தென்காசி',
-      'Thanjavur': 'தஞ்சாவூர்',
-      'Theni': 'தேனி',
-      'Thoothukudi': 'தூத்துக்குடி',
-      'Tiruchirappalli': 'திருச்சிராப்பள்ளி',
-      'Tirunelveli': 'திருநெல்வேலி',
-      'Tirupathur': 'திருப்பத்தூர்',
-      'Tiruppur': 'திருப்பூர்',
-      'Tiruvallur': 'திருவள்ளூர்',
-      'Tiruvannamalai': 'திருவண்ணாமலை',
-      'Tiruvarur': 'திருவாரூர்',
-      'Vellore': 'வேலூர்',
-      'Viluppuram': 'விழுப்புரம்',
-      'Virudhunagar': 'விருதுநகர்',
-    };
+
 
     final roleTranslations = {
       'guest': isTamil ? 'விருந்தினர்' : 'GUEST',
@@ -79,7 +41,7 @@ class HomeDashboard extends ConsumerWidget {
     };
 
     final district = user.assignedRegion['district'] ?? 'Tamil Nadu';
-    final localizedDistrict = isTamil ? (districtTamilNames[district] ?? 'தமிழ்நாடு') : district;
+    final localizedDistrict = isTamil ? (district == 'Tamil Nadu' ? 'தமிழ்நாடு' : context.trDistrict(district, ref)) : district;
     final roleText = roleTranslations[user.role] ?? user.role.replaceAll('_', ' ').toUpperCase();
 
     // Reconstruct list of action buttons based on permissions
@@ -128,6 +90,21 @@ class HomeDashboard extends ConsumerWidget {
       );
     }
 
+    // IT Wing Registration Shortcut hidden from guest
+    if (!isGuest) {
+      actionButtons.add(
+        _buildActionButton(
+          context,
+          icon: Icons.app_registration_outlined,
+          label: context.tr('itWingShortcutTitle', ref),
+          color: Colors.teal,
+          onTap: () {
+            Navigator.pushNamed(context, AppRoutes.influencerForm);
+          },
+        ),
+      );
+    }
+
     actionButtons.add(
       _buildActionButton(
         context,
@@ -150,7 +127,14 @@ class HomeDashboard extends ConsumerWidget {
         icon: Icons.groups_outlined,
         label: context.tr('partyEvents', ref),
         color: Colors.pink,
-        onTap: () => _showEventsDialog(context, ref),
+        onTap: () {
+          if (isGuest) {
+            Navigator.pushNamed(context, AppRoutes.login);
+          } else {
+            ref.read(notificationFilterProvider.notifier).state = 'Events';
+            ref.read(tabIndexProvider.notifier).state = 1;
+          }
+        },
       ),
     );
 
@@ -211,7 +195,7 @@ class HomeDashboard extends ConsumerWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        '${isTamil ? "வணக்கம்" : "Vanakkam"}, ${isTamil && user.fullName == "Guest User" ? "விருந்தினர்" : user.fullName}',
+                        '${isTamil ? "வணக்கம்" : "Vanakkam"}, ${isTamil && (user.fullName == "Guest User" || user.fullName == "Guest") ? "விருந்தினர்" : context.trName(user.fullName, ref)}',
                         style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
                       ),
                       const SizedBox(height: 2),
@@ -286,34 +270,45 @@ class HomeDashboard extends ConsumerWidget {
             const SizedBox(height: 28),
 
             // 4. Highlight Banner (Events Feed)
-            Container(
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                gradient: AppTheme.primaryGradient,
-                borderRadius: BorderRadius.circular(16),
-              ),
-              child: Row(
-                children: [
-                  const Icon(Icons.event_note, size: 40, color: AppTheme.accent),
-                  const SizedBox(width: 16),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          context.tr('upcomingConference', ref),
-                          style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16),
-                        ),
-                        const SizedBox(height: 4),
-                        Text(
-                          context.tr('conferenceDetails', ref),
-                          style: const TextStyle(color: Colors.white70, fontSize: 12),
-                        ),
-                      ],
+            InkWell(
+              onTap: () {
+                if (isGuest) {
+                  Navigator.pushNamed(context, AppRoutes.login);
+                } else {
+                  ref.read(notificationFilterProvider.notifier).state = 'Announcements';
+                  ref.read(tabIndexProvider.notifier).state = 1; // Switch to Notifications tab
+                }
+              },
+              borderRadius: BorderRadius.circular(16),
+              child: Container(
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  gradient: AppTheme.primaryGradient,
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                child: Row(
+                  children: [
+                    const Icon(Icons.event_note, size: 40, color: AppTheme.accent),
+                    const SizedBox(width: 16),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            context.tr('upcomingConference', ref),
+                            style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            context.tr('conferenceDetails', ref),
+                            style: const TextStyle(color: Colors.white70, fontSize: 12),
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                  const Icon(Icons.arrow_forward_ios, size: 16, color: Colors.white),
-                ],
+                    const Icon(Icons.arrow_forward_ios, size: 16, color: Colors.white),
+                  ],
+                ),
               ),
             ),
           ],
@@ -382,39 +377,5 @@ class HomeDashboard extends ConsumerWidget {
     );
   }
 
-  void _showEventsDialog(BuildContext context, WidgetRef ref) {
-    showModalBottomSheet(
-      context: context,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-      ),
-      builder: (context) {
-        return Padding(
-          padding: const EdgeInsets.all(24),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                context.tr('partyEventsFeed', ref),
-                style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 16),
-              ListTile(
-                leading: const Icon(Icons.campaign, color: Colors.blue),
-                title: Text(context.tr('itBootcampTitle', ref)),
-                subtitle: Text(context.tr('itBootcampDetails', ref)),
-              ),
-              const Divider(),
-              ListTile(
-                leading: const Icon(Icons.volunteer_activism, color: Colors.red),
-                title: Text(context.tr('bloodDonationTitle', ref)),
-                subtitle: Text(context.tr('bloodDonationDetails', ref)),
-              ),
-            ],
-          ),
-        );
-      },
-    );
-  }
+
 }

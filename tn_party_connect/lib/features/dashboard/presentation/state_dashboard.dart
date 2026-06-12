@@ -4,6 +4,7 @@ import '../../auth/presentation/auth_state.dart';
 import '../../sos/presentation/sos_state.dart';
 import '../../../core/theme.dart';
 import '../../../core/routes.dart';
+import '../../../core/localization.dart';
 
 class StateDashboard extends ConsumerWidget {
   const StateDashboard({super.key});
@@ -19,6 +20,7 @@ class StateDashboard extends ConsumerWidget {
 
     final user = authState.user;
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final isTamil = ref.watch(languageProvider) == AppLanguage.tamil;
 
     // Separate active and resolved alerts
     final activeAlerts =
@@ -28,7 +30,7 @@ class StateDashboard extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('State Headquarters Dashboard'),
+        title: Text(context.tr('stateHdTitle', ref)),
         actions: [
           IconButton(
             icon: const Icon(Icons.logout),
@@ -46,12 +48,12 @@ class StateDashboard extends ConsumerWidget {
           children: [
             // Banner Section
             Text(
-              'Vanakkam, ${user.fullName}',
+              '${isTamil ? "வணக்கம்" : "Vanakkam"}, ${context.trName(user.fullName, ref)}',
               style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
             ),
-            const Text(
-              'State Command & Analytics Control Center',
-              style: TextStyle(color: Colors.grey, fontSize: 14),
+            Text(
+              context.tr('stateCommandSubtitle', ref),
+              style: const TextStyle(color: Colors.grey, fontSize: 14),
             ),
             const SizedBox(height: 24),
 
@@ -66,28 +68,28 @@ class StateDashboard extends ConsumerWidget {
               children: [
                 _buildStatCard(
                   context,
-                  title: 'Total Members',
+                  title: context.tr('totalMembers', ref),
                   value: '48,256',
                   icon: Icons.people,
                   color: Colors.blue,
                 ),
                 _buildStatCard(
                   context,
-                  title: 'Active SOS Alerts',
+                  title: context.tr('activeSOS', ref),
                   value: '${activeAlerts.length}',
                   icon: Icons.emergency,
                   color: Colors.red,
                 ),
                 _buildStatCard(
                   context,
-                  title: 'IT Wings',
+                  title: context.tr('itWings', ref),
                   value: '842',
                   icon: Icons.campaign,
                   color: Colors.teal,
                 ),
                 _buildStatCard(
                   context,
-                  title: 'Districts Reached',
+                  title: context.tr('districtsReached', ref),
                   value: '38/38',
                   icon: Icons.map,
                   color: Colors.orange,
@@ -100,9 +102,9 @@ class StateDashboard extends ConsumerWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Text(
-                  'Emergency Monitoring Queue',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                Text(
+                  context.tr('emergencyMonitoring', ref),
+                  style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
                 if (activeAlerts.isNotEmpty)
                   Container(
@@ -113,7 +115,7 @@ class StateDashboard extends ConsumerWidget {
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Text(
-                      '${activeAlerts.length} CRITICAL',
+                      '${activeAlerts.length} ${context.tr('critical', ref)}',
                       style: const TextStyle(
                           color: Colors.white,
                           fontSize: 10,
@@ -124,13 +126,13 @@ class StateDashboard extends ConsumerWidget {
             ),
             const SizedBox(height: 12),
             if (activeAlerts.isEmpty)
-              const Card(
+              Card(
                 child: Padding(
-                  padding: EdgeInsets.all(24),
+                  padding: const EdgeInsets.all(24),
                   child: Center(
                     child: Text(
-                        'No active emergency SOS requests reported at this time.',
-                        style: TextStyle(color: Colors.grey)),
+                        context.tr('noActiveSos', ref),
+                        style: const TextStyle(color: Colors.grey)),
                   ),
                 ),
               )
@@ -141,6 +143,9 @@ class StateDashboard extends ConsumerWidget {
                 itemCount: activeAlerts.length,
                 itemBuilder: (context, index) {
                   final alert = activeAlerts[index];
+                  final statusText = isTamil
+                      ? (alert.status == 'active' ? 'செயலில்' : 'அங்கீகரிக்கப்பட்டது')
+                      : alert.status.toUpperCase();
                   return Card(
                     margin: const EdgeInsets.only(bottom: 12),
                     shape: RoundedRectangleBorder(
@@ -157,12 +162,12 @@ class StateDashboard extends ConsumerWidget {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
-                                alert.memberName,
+                                context.trName(alert.memberName, ref),
                                 style: const TextStyle(
                                     fontWeight: FontWeight.bold, fontSize: 18),
                               ),
                               Text(
-                                alert.status.toUpperCase(),
+                                statusText,
                                 style: TextStyle(
                                   color: alert.status == 'active'
                                       ? Colors.red
@@ -208,7 +213,7 @@ class StateDashboard extends ConsumerWidget {
                                               alert.id, 'acknowledged');
                                     },
                                     icon: const Icon(Icons.check, size: 16),
-                                    label: const Text('Acknowledge'),
+                                    label: Text(context.tr('acknowledge', ref)),
                                     style: OutlinedButton.styleFrom(
                                         foregroundColor: Colors.orange),
                                   ),
@@ -224,7 +229,7 @@ class StateDashboard extends ConsumerWidget {
                                   },
                                   icon: const Icon(Icons.done_all,
                                       size: 16, color: Colors.white),
-                                  label: const Text('Mark Resolved'),
+                                  label: Text(context.tr('markResolved', ref)),
                                   style: ElevatedButton.styleFrom(
                                       backgroundColor: Colors.green),
                                 ),
@@ -248,12 +253,11 @@ class StateDashboard extends ConsumerWidget {
                 contentPadding: const EdgeInsets.all(20),
                 leading: const Icon(Icons.troubleshoot,
                     size: 40, color: Colors.teal),
-                title: const Text(
-                  'IT Wing Search Matrix',
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                title: Text(
+                  context.tr('itWingSearchMatrix', ref),
+                  style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
                 ),
-                subtitle: const Text(
-                    'Search and filter digital content writers, videographers, and graphic designers across Tamil Nadu.'),
+                subtitle: Text(context.tr('itWingSearchDesc', ref)),
                 trailing: const Icon(Icons.arrow_forward),
                 onTap: () {
                   Navigator.pushNamed(context, AppRoutes.influencerSearch);
